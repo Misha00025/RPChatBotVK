@@ -11,7 +11,7 @@ def write_msg(user_id, message):
 
 class MyVkApi(vk_api.VkApi):
 
-    rand_id = random.Random(1000).random()
+    rand_id = random.Random().random() * 1000
 
     pass
 
