@@ -3,15 +3,28 @@ import random
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 
+from CommandParser import CommandParser
+from DiceController import DiceController
+
 
 class Arkadia():
 
-    def __init__(self, token):
+    def __init__(self, token, test_mode=False):
         self.token = token
         self.vk = vk_api.VkApi(token=self.token)
 
         self.name = "Аркадия"
 
+        self._base_commands = ["привет", "помощь", "пока"]
+        self._dice_controller = DiceController()
+
+        self._commands = self._base_commands + self._dice_controller.commands
+
+        if test_mode:
+            self.name = "Тася"
+            self.command_parcer = CommandParser(self._commands, "/")
+        else:
+            self.command_parcer = CommandParser(self._commands)
         print(f'Инициализация модуля "{self.name}" завершена!')
 
     def start(self):
@@ -21,32 +34,43 @@ class Arkadia():
             except Exception:
                 print("Переподключение")
                 self.vk = vk_api.VkApi(token=self.token)
-                print(f"{self.name} успешно переподключилась к серверам ВК")
+                print(f'Бот "{self.name}" успешно переподключился к серверам ВК')
+
     def events_listen(self):
 
         longpoll = VkLongPoll(self.vk)
 
         for event in longpoll.listen():
-            if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-                request = event.text
-                if request == "Привет":
-                    self.say_hello(event=event)
-                elif request == "Расскажи о себе":
-                    self.say_about_yourself(event=event)
-                elif request == "Пока":
-                    self.write_msg(event.user_id, "До свидания")
+            if event.type == VkEventType.MESSAGE_NEW:
+                request = str(event.text).lower()
+                commands_with_parameters: [{str, str}] = self.command_parcer.find_commands(request)
 
-    def say_hello(self, event):
+                for command, parameters in commands_with_parameters:
+                    if command in self._dice_controller.commands:
+                        message = self._dice_controller.execute_command(command, parameters)
+                        self.write_msg(event.user_id, message)
+                    elif command in self._base_commands:
+                        self.execute_base_command(event.user_id, command, parameters)
+
+    def execute_base_command(self, user_id: int, command: str, parameters: str):
+        if command == "привет":
+            self.say_hello(user_id)
+        elif command == "расскажи о себе":
+            self.say_about_yourself(user_id)
+        elif command == "пока":
+            self.write_msg(user_id, "До свидания")
+
+    def say_hello(self, user_id):
         message = f'Здравствуйте, меня зовут {self.name}. Если хотите узнать меня лучше, отправьте команду "Расскажи о себе" и я поведаю Вам больше'
-        self.write_msg(event.user_id, message)
+        self.write_msg(user_id, message)
 
-    def say_about_yourself(self, event):
+    def say_about_yourself(self, user_id):
         message = f'Моё имя -- {self.name}. Я -- бот-ассистент для текстовых ролевых игр в чатах. ' \
                   'Я ещё нахожусь в разработке, поэтому знаю только эти команды: \n\n' \
                   '1. Расскажи о себе \n\n ' \
                   'Ещё меня научили здороваться и прощаться, и я рада этому! ' \
                   'Хочу всегда учиться чему-то новому, чтобы становиться всё полезнее и полезнее!'
-        self.write_msg(event.user_id, message)
+        self.write_msg(user_id, message)
 
     def write_msg(self, user_id, message):
         self.vk.method('messages.send', {'user_id': user_id, 'message': message, 'random_id': (random.Random().random()*1000000)})
