@@ -50,27 +50,26 @@ class Arkadia():
                         message = self._dice_controller.execute_command(command, parameters)
                         self.write_msg(event.user_id, message)
                     elif command in self._base_commands:
-                        self.execute_base_command(event.user_id, command, parameters)
+                        message = self.execute_base_command(command, parameters)
+                        self.write_msg(event.user_id, message)
 
-    def execute_base_command(self, user_id: int, command: str, parameters: str):
+    def execute_base_command(self, command: str, parameters: str):
         if command == "привет":
-            self.say_hello(user_id)
+            return self.say_hello()
         elif command == "расскажи о себе":
-            self.say_about_yourself(user_id)
+            return self.say_about_yourself()
         elif command == "пока":
-            self.write_msg(user_id, "До свидания")
+            return "До свидания"
 
-    def say_hello(self, user_id):
-        message = f'Здравствуйте, меня зовут {self.name}. Если хотите узнать меня лучше, отправьте команду "Расскажи о себе" и я поведаю Вам больше'
-        self.write_msg(user_id, message)
+    def say_hello(self):
+        return f'Здравствуйте, меня зовут {self.name}. Если хотите узнать меня лучше, отправьте команду "Расскажи о себе" и я поведаю Вам больше'
 
-    def say_about_yourself(self, user_id):
-        message = f'Моё имя -- {self.name}. Я -- бот-ассистент для текстовых ролевых игр в чатах. ' \
+    def say_about_yourself(self):
+        return f'Моё имя -- {self.name}. Я -- бот-ассистент для текстовых ролевых игр в чатах. ' \
                   'Я ещё нахожусь в разработке, поэтому знаю только эти команды: \n\n' \
                   '1. Расскажи о себе \n\n ' \
                   'Ещё меня научили здороваться и прощаться, и я рада этому! ' \
                   'Хочу всегда учиться чему-то новому, чтобы становиться всё полезнее и полезнее!'
-        self.write_msg(user_id, message)
 
     def write_msg(self, user_id, message):
         self.vk.method('messages.send', {'user_id': user_id, 'message': message, 'random_id': (random.Random().random()*1000000)})
