@@ -14,23 +14,24 @@ class CommandParser():
         :return list of command with parameters:
         '''
 
-        print(message)
+        # print(message)
         commands_and_parameters = []
 
-        prefix_position = message.find(self._prefix)
+        while True:
+            prefix_position = message.find(self._prefix)
 
-        if prefix_position == -1:
-            return commands_and_parameters
+            if prefix_position == -1:
+                return commands_and_parameters
 
-        end_of_line_position = message.find("\n", prefix_position)+1
-        if end_of_line_position <= 0:
-            end_of_line_position = len(message)
+            end_of_line_position = message.find("\n", prefix_position)
+            if end_of_line_position <= 0:
+                end_of_line_position = len(message)
 
-        line = message[prefix_position:end_of_line_position].lower()
+            line = message[prefix_position:end_of_line_position].lower()
 
-        commands_and_parameters.append(self.find_command_in_line(line))
+            commands_and_parameters.append(self.find_command_in_line(line))
 
-        return commands_and_parameters
+            message = message[end_of_line_position+1:]
 
     def find_command_in_line(self, line: str) -> {str, str}:
         command_start = 0
@@ -47,8 +48,8 @@ class CommandParser():
             return None
 
         command = line[command_start:command_end]
-        parameters = line[command_end:]
-        # print(f'{command}, {parameters}')
+        parameters = line[command_end:].strip()
+        print(f'Command: {command}, Parameters: {parameters}')
         command_and_parameters = (command, parameters)
         # print(command_and_parameters)
         return command_and_parameters

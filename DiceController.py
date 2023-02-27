@@ -15,7 +15,7 @@ class DiceController():
         :return message:
         '''
         if self.is_correct_parameters(parameters):
-            return f"Результат броска: {self._dice_controller.roll_dice(parameters)}"
+            return f"Результат броска {command}{parameters}: {self.roll_dice(parameters)}"
         else:
             return "Не могу выполнить команду :("
 

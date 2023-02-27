@@ -31,27 +31,42 @@ class Arkadia():
         while True:
             try:
                 self.events_listen()
-            except Exception:
+            except:
                 print("Переподключение")
                 self.vk = vk_api.VkApi(token=self.token)
                 print(f'Бот "{self.name}" успешно переподключился к серверам ВК')
+        # self.events_listen()
 
     def events_listen(self):
 
         longpoll = VkLongPoll(self.vk)
 
         for event in longpoll.listen():
-            if event.type == VkEventType.MESSAGE_NEW:
+            if event.type == VkEventType.MESSAGE_NEW and not event.from_group:
+
                 request = str(event.text).lower()
                 commands_with_parameters: [{str, str}] = self.command_parcer.find_commands(request)
+                message = self.assembly_message_to_commands(event, commands_with_parameters)
 
-                for command, parameters in commands_with_parameters:
-                    if command in self._dice_controller.commands:
-                        message = self._dice_controller.execute_command(command, parameters)
-                        self.write_msg(event.user_id, message)
-                    elif command in self._base_commands:
-                        message = self.execute_base_command(command, parameters)
-                        self.write_msg(event.user_id, message)
+
+                if hasattr(event, 'chat_id'):
+                    self.write_msg_to_chat(event.chat_id, message)
+                    print(f'ChatID: {event.chat_id}, UserID: {event.user_id}')
+                else:
+                    self.write_msg(event.user_id, message)
+                    print(f'ChatID: {event.user_id}, UserID: {event.user_id}')
+
+
+
+    def assembly_message_to_commands(self, event, commands_with_parameters: [(str, str)]):
+        message = ""
+        for command, parameters in commands_with_parameters:
+            if command in self._dice_controller.commands:
+                message += self._dice_controller.execute_command(command, parameters)
+            elif command in self._base_commands:
+                message += self.execute_base_command(command, parameters)
+            message += "\n"
+        return message
 
     def execute_base_command(self, command: str, parameters: str):
         if command == "привет":
@@ -72,4 +87,11 @@ class Arkadia():
                   'Хочу всегда учиться чему-то новому, чтобы становиться всё полезнее и полезнее!'
 
     def write_msg(self, user_id, message):
+        if message == "":
+            return
         self.vk.method('messages.send', {'user_id': user_id, 'message': message, 'random_id': (random.Random().random()*1000000)})
+
+    def write_msg_to_chat(self, chat_id, message):
+        if message == "":
+            return
+        self.vk.method('messages.send', {'chat_id': chat_id, 'message': message, 'random_id': (random.Random().random()*1000000)})
