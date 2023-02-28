@@ -8,7 +8,7 @@ class CommandParser():
         self._commands = commands
         print(self._commands)
 
-    def find_commands(self, message: str) -> [{str, str}]:
+    def find_commands(self, message: str) -> [(str, str)]:
         '''
         :param message:
         :return list of command with parameters:
@@ -39,10 +39,9 @@ class CommandParser():
 
         for command_from_list in self._commands:
             command_start = line.find(command_from_list)
-            if command_start == -1:
-                continue
-            command_end = command_start + len(command_from_list)
-            break
+            if command_start != -1:
+                command_end = command_start + len(command_from_list)
+                break
 
         if command_start == -1:
             return None

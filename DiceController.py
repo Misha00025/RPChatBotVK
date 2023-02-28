@@ -4,9 +4,6 @@ import random
 class DiceController():
 
     def __init__(self):
-
-        self.commands = ["dice ", "d", "куб ", "к"]
-
         self._random = random.Random()
 
     def execute_command(self, command, parameters) -> str:

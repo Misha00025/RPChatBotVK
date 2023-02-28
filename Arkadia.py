@@ -1,97 +1,119 @@
-import random
+import inspect
+import os
+import sys
 
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
+from vk_api.utils import get_random_id
+from vk_api.vk_api import VkApi
 
 from CommandParser import CommandParser
 from DiceController import DiceController
+
+
+
+
+
 
 
 class Arkadia():
 
     def __init__(self, token, test_mode=False):
         self.token = token
-        self.vk = vk_api.VkApi(token=self.token)
+        # self.vk = vk_api.VkApi(token=self.token)
+        self.vk_session = VkApi(token=self.token)
+        self.vk = self.vk_session.get_api()
 
         self.name = "Аркадия"
 
-        self._base_commands = ["привет", "помощь", "пока"]
-        self._dice_controller = DiceController()
+        self._modules = self.load_modules("apis")
 
-        self._commands = self._base_commands + self._dice_controller.commands
+        self._commands = self.load_commands()
 
         if test_mode:
             self.name = "Тася"
-            self.command_parcer = CommandParser(self._commands, "/")
+            self.command_parcer = CommandParser(self._commands, "!")
         else:
-            self.command_parcer = CommandParser(self._commands)
+            self.command_parcer = CommandParser(self._commands, "/")
         print(f'Инициализация модуля "{self.name}" завершена!')
+
+    def load_modules(self, path):
+        """
+        Import all modules from the given directory
+        """
+        if path[-1:] != '/':
+            path += '/'
+        if not os.path.exists(path):
+            raise OSError("Directory does not exist: %s" % path)
+        modules = []
+        for f in os.listdir(path):
+            # Ignore anything that isn't a .py file
+            if len(f) > 3 and f[-3:] == '.py':
+                modname = f[:-3]
+                modpath = path[:-1] + "." + f[:-3]
+                # Import the module
+                __import__(modpath, globals(), locals(), [f'{modname}'])
+                for name, obj in inspect.getmembers(sys.modules[modpath]):
+                    if inspect.isclass(obj) and name == modname:
+                        modules.append(obj())
+        return modules
+
+    def load_commands(self) -> [str]:
+        commands = []
+        for module in self._modules:
+            if self.is_api(module):
+                commands += module.commands
+        return commands
 
     def start(self):
         while True:
             try:
                 self.events_listen()
-            except:
-                print("Переподключение")
+            finally:
+                print("Выполняется попытка переподключения")
                 self.vk = vk_api.VkApi(token=self.token)
                 print(f'Бот "{self.name}" успешно переподключился к серверам ВК')
-        # self.events_listen()
 
     def events_listen(self):
-
-        longpoll = VkLongPoll(self.vk)
-
+        longpoll = VkLongPoll(self.vk_session)
         for event in longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW and not event.from_group:
-
                 request = str(event.text).lower()
-                commands_with_parameters: [{str, str}] = self.command_parcer.find_commands(request)
-                message = self.assembly_message_to_commands(event, commands_with_parameters)
-
-
-                if hasattr(event, 'chat_id'):
+                commands_with_parameters: [(str, str)] = self.command_parcer.find_commands(request)
+                message = self.assembly_message(event, commands_with_parameters)
+                if event.from_chat:
                     self.write_msg_to_chat(event.chat_id, message)
-                    print(f'ChatID: {event.chat_id}, UserID: {event.user_id}')
+                    print(f'Message in chat_{event.chat_id} from user_{event.user_id}')
                 else:
                     self.write_msg(event.user_id, message)
-                    print(f'ChatID: {event.user_id}, UserID: {event.user_id}')
+                    print(f'Message from user_{event.user_id}')
 
-
-
-    def assembly_message_to_commands(self, event, commands_with_parameters: [(str, str)]):
+    def assembly_message(self, event, commands_with_parameters: [(str, str)]):
         message = ""
-        for command, parameters in commands_with_parameters:
-            if command in self._dice_controller.commands:
-                message += self._dice_controller.execute_command(command, parameters)
-            elif command in self._base_commands:
-                message += self.execute_base_command(command, parameters)
-            message += "\n"
+        for module in self._modules:
+            if self.is_api(module) and module.has_commands(commands_with_parameters):
+                message += module.assembly_message(event.user_id, commands_with_parameters) + "\n\n"
         return message
-
-    def execute_base_command(self, command: str, parameters: str):
-        if command == "привет":
-            return self.say_hello()
-        elif command == "расскажи о себе":
-            return self.say_about_yourself()
-        elif command == "пока":
-            return "До свидания"
-
-    def say_hello(self):
-        return f'Здравствуйте, меня зовут {self.name}. Если хотите узнать меня лучше, отправьте команду "Расскажи о себе" и я поведаю Вам больше'
-
-    def say_about_yourself(self):
-        return f'Моё имя -- {self.name}. Я -- бот-ассистент для текстовых ролевых игр в чатах. ' \
-                  'Я ещё нахожусь в разработке, поэтому знаю только эти команды: \n\n' \
-                  '1. Расскажи о себе \n\n ' \
-                  'Ещё меня научили здороваться и прощаться, и я рада этому! ' \
-                  'Хочу всегда учиться чему-то новому, чтобы становиться всё полезнее и полезнее!'
 
     def write_msg(self, user_id, message):
         if message == "":
             return
-        self.vk.method('messages.send', {'user_id': user_id, 'message': message, 'random_id': (random.Random().random()*1000000)})
+        self.vk.messages.send(
+            user_id=user_id,
+            message=message,
+            random_id=get_random_id()
+        )
 
     def write_msg_to_chat(self, chat_id, message):
         if message == "":
             return
-        self.vk.method('messages.send', {'chat_id': chat_id, 'message': message, 'random_id': (random.Random().random()*1000000)})
+        self.vk.messages.send(
+            chat_id=chat_id,
+            message=message,
+            random_id=get_random_id()
+        )
+
+    def is_api(self, module) -> bool:
+        return hasattr(module, "commands") and \
+            hasattr(module, "assembly_message") and \
+            hasattr(module, "has_commands")
