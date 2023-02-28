@@ -1,22 +1,13 @@
-import inspect
-import os
-import sys
-
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.utils import get_random_id
 from vk_api.vk_api import VkApi
 
 from CommandParser import CommandParser
-from DiceController import DiceController
+from Loaders import load_modules, load_commands
 
 
-
-
-
-
-
-class Arkadia():
+class Arkadia:
 
     def __init__(self, token, test_mode=False):
         self.token = token
@@ -26,9 +17,9 @@ class Arkadia():
 
         self.name = "Аркадия"
 
-        self._modules = self.load_modules("apis")
+        self._modules = load_modules("apis", Arkadia.is_api)
 
-        self._commands = self.load_commands()
+        self._commands = load_commands(self._modules, self.is_api)
 
         if test_mode:
             self.name = "Тася"
@@ -36,34 +27,6 @@ class Arkadia():
         else:
             self.command_parcer = CommandParser(self._commands, "/")
         print(f'Инициализация модуля "{self.name}" завершена!')
-
-    def load_modules(self, path):
-        """
-        Import all modules from the given directory
-        """
-        if path[-1:] != '/':
-            path += '/'
-        if not os.path.exists(path):
-            raise OSError("Directory does not exist: %s" % path)
-        modules = []
-        for f in os.listdir(path):
-            # Ignore anything that isn't a .py file
-            if len(f) > 3 and f[-3:] == '.py':
-                modname = f[:-3]
-                modpath = path[:-1] + "." + f[:-3]
-                # Import the module
-                __import__(modpath, globals(), locals(), [f'{modname}'])
-                for name, obj in inspect.getmembers(sys.modules[modpath]):
-                    if inspect.isclass(obj) and name == modname:
-                        modules.append(obj())
-        return modules
-
-    def load_commands(self) -> [str]:
-        commands = []
-        for module in self._modules:
-            if self.is_api(module):
-                commands += module.commands
-        return commands
 
     def start(self):
         while True:
@@ -92,7 +55,7 @@ class Arkadia():
         message = ""
         for module in self._modules:
             if self.is_api(module) and module.has_commands(commands_with_parameters):
-                message += module.assembly_message(event.user_id, commands_with_parameters) + "\n\n"
+                message += module.assembly_message(event, commands_with_parameters) + "\n\n"
         return message
 
     def write_msg(self, user_id, message):
@@ -113,7 +76,8 @@ class Arkadia():
             random_id=get_random_id()
         )
 
-    def is_api(self, module) -> bool:
+    @staticmethod
+    def is_api(module) -> bool:
         return hasattr(module, "commands") and \
             hasattr(module, "assembly_message") and \
-            hasattr(module, "has_commands")
+            hasattr(module, "has_command")
