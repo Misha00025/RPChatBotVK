@@ -26,7 +26,9 @@ class BaseAPI:
             elif command == "пока":
                 return "До свидания"
 
-    def has_command(self, commands_with_parameters) -> bool:
+    def has_commands(self, commands_with_parameters) -> bool:
+        if len(commands_with_parameters) == 0:
+            return False
         for command, parameters in commands_with_parameters:
             if command in self.commands:
                 return True

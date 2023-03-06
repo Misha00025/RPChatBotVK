@@ -1,3 +1,5 @@
+import random
+
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.utils import get_random_id
@@ -12,8 +14,7 @@ class Arkadia:
     def __init__(self, token, test_mode=False):
         self.token = token
         # self.vk = vk_api.VkApi(token=self.token)
-        self.vk_session = VkApi(token=self.token)
-        self.vk = self.vk_session.get_api()
+        self.init_vk_session()
 
         self.name = "Аркадия"
 
@@ -21,21 +22,30 @@ class Arkadia:
 
         self._commands = load_commands(self._modules, self.is_api)
 
-        if test_mode:
+        self.test_mode = test_mode
+
+        if self.test_mode:
             self.name = "Тася"
             self.command_parcer = CommandParser(self._commands, "!")
         else:
             self.command_parcer = CommandParser(self._commands, "/")
         print(f'Инициализация модуля "{self.name}" завершена!')
 
+    def init_vk_session(self):
+        self.vk_session = VkApi(token=self.token)
+        self.vk = self.vk_session.get_api()
+
     def start(self):
-        while True:
-            try:
-                self.events_listen()
-            finally:
-                print("Выполняется попытка переподключения")
-                self.vk = vk_api.VkApi(token=self.token)
-                print(f'Бот "{self.name}" успешно переподключился к серверам ВК')
+        if not self.test_mode:
+            while True:
+                try:
+                    self.events_listen()
+                except:
+                    print("Переподключение")
+                    self.init_vk_session()
+                    print(f'Бот "{self.name}" успешно переподключился к серверам ВК')
+        else:
+            self.events_listen()
 
     def events_listen(self):
         longpoll = VkLongPoll(self.vk_session)
@@ -80,4 +90,4 @@ class Arkadia:
     def is_api(module) -> bool:
         return hasattr(module, "commands") and \
             hasattr(module, "assembly_message") and \
-            hasattr(module, "has_command")
+            hasattr(module, "has_commands")

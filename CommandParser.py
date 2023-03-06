@@ -28,10 +28,13 @@ class CommandParser():
                 end_of_line_position = len(message)
 
             line = message[prefix_position:end_of_line_position].lower()
-
-            commands_and_parameters.append(self.find_command_in_line(line))
-
             message = message[end_of_line_position+1:]
+
+            command_and_parameters = self.find_command_in_line(line)
+            if command_and_parameters == None:
+                continue
+
+            commands_and_parameters.append(command_and_parameters)
 
     def find_command_in_line(self, line: str) -> {str, str}:
         command_start = 0
