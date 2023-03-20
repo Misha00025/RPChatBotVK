@@ -2,8 +2,10 @@ import inspect
 import os
 import sys
 
+from apis import BaseAPI, CharacterAPI, DicesAPI
 
-def load_modules(path, is_valid=lambda entity: True):
+
+def auto_load_modules_from(path, is_valid=lambda entity: True):
     """
     Import all modules from the given directory
     """
@@ -26,6 +28,14 @@ def load_modules(path, is_valid=lambda entity: True):
                         modules.append(module)
     return modules
 
+def load_modules(is_valid=lambda entity: True):
+    modules = []
+
+    modules.append(BaseAPI.BaseAPI())
+    #modules.append(CharacterAPI.CharacterAPI())
+    modules.append(DicesAPI.DicesAPI())
+
+    return modules
 
 def load_commands(modules, is_valid=lambda entity: True) -> [str]:
     commands = []

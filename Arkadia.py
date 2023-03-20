@@ -18,7 +18,7 @@ class Arkadia:
 
         self.name = "Аркадия"
 
-        self._modules = load_modules("apis", Arkadia.is_api)
+        self._modules = load_modules(Arkadia.is_api)
 
         self._commands = load_commands(self._modules, self.is_api)
 
