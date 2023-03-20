@@ -1,4 +1,17 @@
 import random
+import numexpr as ne
+
+
+def get_first_num(string: str()):
+    result = str()
+
+    while string[0].isalnum():
+        result += string[0]
+        if len(string) <= 1:
+            break
+        string = string[1:]
+
+    return result
 
 
 class DiceController():
@@ -12,14 +25,22 @@ class DiceController():
         :return message:
         '''
         if self.is_correct_parameters(parameters):
-            return f"Результат броска {command}{parameters}: {self.roll_dice(parameters)}"
+            dice = get_first_num(parameters)
+            result_dice = self.roll_dice(dice)
+            if (dice == parameters):
+                return f"Результат броска {command}{parameters}: {result_dice}"
+            else:
+
+                formula = str(result_dice) + parameters[len(dice):]
+                return f"Результат броска {command}{parameters}: {ne.evaluate(formula)} ({formula})"
         else:
             return "Не могу выполнить команду :("
 
     def is_correct_parameters(self, parameters: str) -> bool:
-        return parameters.isalnum()
+        #TODO: Сделать проверку символов + и -. Добавить проверку префикса
 
-    def roll_dice(self, parameters) -> int:
-        result = 1 + int(self._random.random() * int(parameters))
+        return True #parameters.isalnum()
+
+    def roll_dice(self, dice) -> int:
+        result = 1 + int(self._random.random() * int(dice))
         return result
-
