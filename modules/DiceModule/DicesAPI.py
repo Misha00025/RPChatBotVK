@@ -1,5 +1,5 @@
-from DiceController import DiceController
-from apis.BaseAPI import BaseAPI
+from .DiceController import DiceController
+from modules.BaseModule.BaseAPI import BaseAPI
 
 
 class DicesAPI(BaseAPI):

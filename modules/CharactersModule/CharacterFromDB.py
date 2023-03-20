@@ -1,5 +1,5 @@
-from DBManager import DBManager
-from Character import Character
+from .DBManager import DBManager
+from .Character import Character
 
 
 class CharacterFromDB:

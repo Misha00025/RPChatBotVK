@@ -2,7 +2,8 @@ import inspect
 import os
 import sys
 
-from apis import BaseAPI, CharacterAPI, DicesAPI
+from modules.DiceModule import DicesAPI
+from modules.BaseModule import BaseAPI
 
 
 def auto_load_modules_from(path, is_valid=lambda entity: True):
