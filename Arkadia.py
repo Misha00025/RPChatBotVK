@@ -11,7 +11,7 @@ from Loaders import load_modules, load_commands
 
 class Arkadia:
 
-    def __init__(self, token, test_mode=False):
+    def __init__(self, token, version = "0.6.1",  test_mode=False):
         self.token = token
         # self.vk = vk_api.VkApi(token=self.token)
         self.init_vk_session()
@@ -29,7 +29,7 @@ class Arkadia:
             self.command_parcer = CommandParser(self._commands, "!")
         else:
             self.command_parcer = CommandParser(self._commands, "/")
-        print(f'Инициализация модуля "{self.name}" завершена!')
+        print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
 
     def init_vk_session(self):
         self.vk_session = VkApi(token=self.token)
