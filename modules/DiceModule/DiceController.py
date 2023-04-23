@@ -2,7 +2,7 @@ import random
 import numexpr as ne
 
 
-def get_first_num(string: str()):
+def get_first_num(string: str):
     result = str()
 
     while string[0].isalnum():
@@ -14,7 +14,7 @@ def get_first_num(string: str()):
     return result
 
 
-class DiceController():
+class DiceController:
 
     def __init__(self):
         self._random = random.Random()
