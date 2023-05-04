@@ -1,8 +1,8 @@
+#!./venv/bin/python
+
 from Arkadia import Arkadia
-from config import token
+from config import token, version
 
-
-version = "0.2.0"
 
 application = Arkadia(token=token, version=version)
 
