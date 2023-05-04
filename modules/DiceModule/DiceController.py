@@ -27,8 +27,6 @@ class DiceController:
         if self.is_correct_parameters(parameters):
             dice = get_first_num(parameters)
             result_dice = self.roll_dice(dice)
-            # print(f"dice{dice} = {result_dice}")
-            # print(result_dice)
             if dice == parameters:
                 return f"Результат броска {command}{parameters}: {result_dice}"
             else:

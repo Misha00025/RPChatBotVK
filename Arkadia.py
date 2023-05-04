@@ -11,41 +11,32 @@ from Loaders import load_modules, load_commands
 
 class Arkadia:
 
-    def __init__(self, token, version = "0.6.1",  test_mode=False):
+    def __init__(self, token, version):
         self.token = token
         # self.vk = vk_api.VkApi(token=self.token)
-        self.init_vk_session()
+        self._init_vk_session()
 
         self.name = "Аркадия"
 
-        self._modules = load_modules(Arkadia.is_api)
+        self._modules = load_modules(Arkadia.has_correct_api)
 
-        self._commands = load_commands(self._modules, self.is_api)
+        self._commands = load_commands(self._modules, self.has_correct_api)
 
-        self.test_mode = test_mode
-
-        if self.test_mode:
-            self.name = "Тася"
-            self.command_parcer = CommandParser(self._commands, "!")
-        else:
-            self.command_parcer = CommandParser(self._commands, "/")
+        self.command_parcer = CommandParser(self._commands, "/")
         print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
 
-    def init_vk_session(self):
+    def _init_vk_session(self):
         self.vk_session = VkApi(token=self.token)
         self.vk = self.vk_session.get_api()
 
     def start(self):
-        if not self.test_mode:
-            while True:
-                try:
-                    self.events_listen()
-                except:
-                    print("Переподключение")
-                    self.init_vk_session()
-                    print(f'Бот "{self.name}" успешно переподключился к серверам ВК')
-        else:
-            self.events_listen()
+        while True:
+            try:
+                self.events_listen()
+            except:
+                print("Переподключение")
+                self._init_vk_session()
+                print(f'Бот "{self.name}" успешно переподключился к серверам ВК')
 
     def events_listen(self):
         longpoll = VkLongPoll(self.vk_session)
@@ -64,7 +55,7 @@ class Arkadia:
     def assembly_message(self, event, commands_with_parameters: [(str, str)]):
         message = ""
         for module in self._modules:
-            if self.is_api(module) and module.has_commands(commands_with_parameters):
+            if self.has_correct_api(module) and module.has_commands(commands_with_parameters):
                 message += module.assembly_message(event, commands_with_parameters) + "\n\n"
         return message
 
@@ -87,7 +78,7 @@ class Arkadia:
         )
 
     @staticmethod
-    def is_api(module) -> bool:
+    def has_correct_api(module) -> bool:
         return hasattr(module, "commands") and \
             hasattr(module, "assembly_message") and \
             hasattr(module, "has_commands")

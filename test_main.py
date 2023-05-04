@@ -1,10 +1,10 @@
 #!./venv/bin/python
 
-from Arkadia import Arkadia
+from Tasia import Tasia
 from config import version, token
 
 
-application = Arkadia(token=token, test_mode=True, version=version)
+application = Tasia(version=version)
 
 if __name__ == "__main__":
     application.start()

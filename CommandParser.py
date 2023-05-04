@@ -36,6 +36,9 @@ class CommandParser():
 
             commands_and_parameters.append(command_and_parameters)
 
+    def find_prefix_in_line(self, line: str) -> str:
+        pass
+
     def find_command_in_line(self, line: str) -> {str, str}:
         command_start = 0
         command_end = 0
@@ -51,8 +54,10 @@ class CommandParser():
 
         command = line[command_start:command_end]
         parameters = line[command_end:].strip()
-        print(f'Command: {command}, Parameters: {parameters}')
+        # print(f'Command: {command}, Parameters: {parameters}')
         command_and_parameters = (command, parameters)
         # print(command_and_parameters)
         return command_and_parameters
 
+    def find_parameters_in_line(self):
+        pass
