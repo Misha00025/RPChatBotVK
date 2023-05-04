@@ -25,12 +25,12 @@ class Tasia:
             message = input("Введите команду: ")
             if message == "quit":
                 break
-            cwp = self.command_parser.find_command_in_line(message)
-            print(self.assembly_message([cwp]))
+            command_lines = self.command_parser.find_command_lines(message)
+            print(self.assembly_message(command_lines))
 
-    def assembly_message(self, commands_with_parameters: [(str, str)]):
+    def assembly_message(self, command_lines: [str]):
         message = ""
         for module in self._modules:
-            if Arkadia.has_correct_api(module) and module.has_commands(commands_with_parameters):
-                message += module.assembly_message(None, commands_with_parameters)
+            if Arkadia.has_correct_api(module) and module.has_commands(command_lines):
+                message += module.assembly_message(command_lines)
         return message

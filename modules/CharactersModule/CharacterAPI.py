@@ -16,10 +16,10 @@ class CharacterAPI(BaseAPI):
 
         self.commands = list(self.events.keys())
 
-    def assembly_message(self, event, commands_with_parameters: [(str, str)]) -> str:
+    def assembly_message(self, event, command_lines: [(str, str)]) -> str:
         message = ""
 
-        for command, parameters in commands_with_parameters:
+        for command, parameters in command_lines:
             if command in self.commands:
                 message += self.execute_command(event.user_id, command, parameters) + "\n"
 
