@@ -129,5 +129,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Tokens file
+# My files
 token.txt
+log.txt

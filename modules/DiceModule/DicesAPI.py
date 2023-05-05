@@ -16,5 +16,5 @@ class DicesAPI(BaseAPI):
             parameters = self.cp.find_parameters_in_line(line, command)
             prefix = self.cp.find_prefix_in_line(line, command)
             if command in self.commands:
-                message += self.dice_controller.execute_command(command, parameters) + '\n'
+                message += self.dice_controller.execute_command(command, parameters, prefix) + '\n'
         return message

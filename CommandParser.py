@@ -26,7 +26,7 @@ class CommandParser():
         command_start = line.find(command)
         if command_start <= 0:
             return ""
-        return line[:command_start-1]
+        return line[:command_start]
 
     def find_command_in_line(self, line: str) -> str | None:
         for command_from_list in self._commands:
