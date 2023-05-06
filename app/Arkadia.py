@@ -6,28 +6,26 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.utils import get_random_id
 from vk_api.vk_api import VkApi
 
-from CommandParser import CommandParser
-from Loaders import load_modules, load_commands
+from app.CommandParser import CommandParser
+from app.Loaders import load_modules, load_commands
+from app.Logger import Logger
 
 
 class Arkadia:
 
     def __init__(self, token, version, log_file):
         self.token = token
-
-        self.log_file_name = log_file
-        open(self.log_file_name, "w+")
-
         self._init_vk_session()
 
         self.name = "Аркадия"
-
         self._modules = load_modules(Arkadia.has_correct_api)
-
         self._commands = load_commands(self._modules, self.has_correct_api)
-
         self.command_parcer = CommandParser(self._commands, "/")
-        print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
+
+        self.log = Logger()
+        self.log.write_errors_in_file()
+        self.log.write_datetime_in_console()
+        self.log.write_and_print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
 
     def _init_vk_session(self):
         self.vk_session = VkApi(token=self.token)
@@ -35,15 +33,16 @@ class Arkadia:
 
     def start(self):
         while True:
-            with open(self.log_file_name, "a") as log_file:
-                sys.stdout = log_file
-                sys.stderr = log_file
-                try:
-                        self.events_listen()
-                except:
-                    print("Переподключение")
-                    self._init_vk_session()
-                    print(f'Бот "{self.name}" успешно переподключился к серверам ВК')
+            try:
+                self.events_listen()
+            except vk_api.exceptions.ApiError as err:
+                self.log.only_write(err)
+                self.log.only_print("Переподключение")
+                self._init_vk_session()
+                self.log.only_print(f'Бот "{self.name}" успешно переподключился к серверам ВК')
+            except KeyboardInterrupt:
+                self.log.write_and_print("Выполнено отключение бота извне!")
+                break
 
     def events_listen(self):
         longpoll = VkLongPoll(self.vk_session)

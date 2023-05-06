@@ -1,4 +1,4 @@
-from CommandParser import CommandParser
+from app.CommandParser import CommandParser
 
 
 class BaseAPI:

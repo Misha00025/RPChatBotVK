@@ -1,8 +1,6 @@
 #!./venv/bin/python
-import sys
-from contextlib import redirect_stdout
 
-from Arkadia import Arkadia
+from app.Arkadia import Arkadia
 from config import token, version
 
 

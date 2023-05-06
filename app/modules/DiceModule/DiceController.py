@@ -57,7 +57,7 @@ class DiceController:
         dices_sum_str: str = "(" + str(dices_sum)
         for __ in range(int(count)-1):
             dice_result = self.roll_dice(parameters)
-            dices_sum_str += " + " + self.decorate_dice(dice_result, parameters)
+            dices_sum_str += " + " + _decorate_dice(dice_result, parameters)
             dices_sum += dice_result
         res = str(dices_sum) + " " + dices_sum_str + ")"
         return res

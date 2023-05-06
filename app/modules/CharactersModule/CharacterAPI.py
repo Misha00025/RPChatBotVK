@@ -1,5 +1,5 @@
 from .CharacterFromDB import CharacterFromDB
-from modules.BaseModule.BaseAPI import BaseAPI
+from app.modules.BaseModule.BaseAPI import BaseAPI
 
 
 class CharacterAPI(BaseAPI):

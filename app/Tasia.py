@@ -1,7 +1,8 @@
-from Arkadia import Arkadia
-from CommandParser import CommandParser
-from Loaders import load_modules, load_commands
+from app.Arkadia import Arkadia
+from app.CommandParser import CommandParser
+from app.Loaders import load_modules, load_commands
 
+from app.Logger import Logger
 
 class Tasia:
 
@@ -10,12 +11,13 @@ class Tasia:
         self.name = "Тася"
 
         self._modules = load_modules(Arkadia.has_correct_api)
-
         self._commands = load_commands(self._modules, Arkadia.has_correct_api)
-
         self.command_parser = CommandParser(self._commands, "")
 
-        print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
+        self.logger = Logger()
+        self.logger.write_datetime_in_console()
+        self.logger.write_errors_in_file()
+        self.logger.write_and_print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
 
     def start(self):
         self.events_listen()
@@ -26,7 +28,8 @@ class Tasia:
             if message == "quit":
                 break
             command_lines = self.command_parser.find_command_lines(message)
-            print(self.assembly_message(command_lines))
+            self.logger.only_write(f"Input commands: {command_lines}")
+            self.logger.write_and_print(self.assembly_message(command_lines))
 
     def assembly_message(self, command_lines: [str]):
         message = ""

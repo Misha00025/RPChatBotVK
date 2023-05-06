@@ -1,8 +1,7 @@
 #!./venv/bin/python
 
-from Tasia import Tasia
-from config import version, token
-
+from app.Tasia import Tasia
+from config import version
 
 application = Tasia(version=version)
 

@@ -6,7 +6,7 @@ class CommandParser():
 
         self._start = prefix
         self._commands = commands
-        print(self._commands)
+        # print(self._commands)
 
     def find_command_lines(self, message: str) -> [str]:
         lines = message.split("\n")
