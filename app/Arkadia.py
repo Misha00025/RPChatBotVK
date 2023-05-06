@@ -23,7 +23,7 @@ class Arkadia:
         self.command_parcer = CommandParser(self._commands, "/")
 
         self.log = Logger()
-        self.log.write_errors_in_file()
+        # self.log.write_errors_in_file()
         self.log.write_datetime_in_console()
         self.log.write_and_print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
 
@@ -42,6 +42,7 @@ class Arkadia:
                 self.log.only_print(f'Бот "{self.name}" успешно переподключился к серверам ВК')
             except KeyboardInterrupt:
                 self.log.write_and_print("Выполнено отключение бота извне!")
+                self.log.save_logs()
                 break
 
     def events_listen(self):
@@ -55,10 +56,10 @@ class Arkadia:
 
                 if event.from_chat:
                     self.write_msg_to_chat(event.chat_id, message)
-                    print(f'Message in chat_{event.chat_id} from user_{event.user_id}: {request}')
+                    self.log.write_and_print(f'Message in chat_{event.chat_id} from user_{event.user_id}: {request}')
                 else:
                     self.write_msg(event.user_id, message)
-                    print(f'Message from user_{event.user_id}: {request}')
+                    self.log.write_and_print(f'Message from user_{event.user_id}: {request}')
 
     def assembly_message(self, command_lines: [str]):
         message = ""

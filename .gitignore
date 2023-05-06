@@ -132,3 +132,4 @@ dmypy.json
 # My files
 token.txt
 log.txt
+/logs
