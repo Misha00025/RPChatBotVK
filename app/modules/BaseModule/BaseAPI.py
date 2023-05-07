@@ -1,4 +1,4 @@
-from vk_api.longpoll import Event
+from app.UserFromDB import UserFromDB
 
 from app.CommandParser import CommandParser
 
@@ -12,7 +12,7 @@ class BaseAPI:
         self.commands = commands
         self.cp = CommandParser(commands=self.commands)
 
-    def assembly_message(self, event: Event, command_lines: [str]) -> str:
+    def assembly_message(self, user: UserFromDB, command_lines: [str]) -> str:
         pass
 
     def has_commands(self, command_lines) -> bool:

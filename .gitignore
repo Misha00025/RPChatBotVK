@@ -133,3 +133,4 @@ dmypy.json
 token.txt
 log.txt
 /logs
+test.py

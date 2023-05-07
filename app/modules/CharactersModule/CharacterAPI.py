@@ -1,7 +1,7 @@
 from .CharacterFromDB import CharacterFromDB
 from ..BaseModule.BaseAPI import BaseAPI
 from .CommandExecuter import CommandExecuter
-from .UserFromDB import UserFromDB
+from app.UserFromDB import UserFromDB
 
 
 class CharacterAPI(BaseAPI):
@@ -20,12 +20,11 @@ class CharacterAPI(BaseAPI):
         self.commands = ["персонаж"]
         super().__init__(self.commands)
 
-    def assembly_message(self, event, command_lines) -> str:
+    def assembly_message(self, user: UserFromDB, command_lines) -> str:
         message = ""
 
-        user = UserFromDB(event.user_id)
-        if not user.is_exist():
-            user.create_user(event.user_id)
+        if not user.exist():
+            user.create_user(user._user_id)
 
         for line in command_lines:
             message += self.execute_command(user, line)

@@ -11,7 +11,7 @@ class DicesAPI(BaseAPI):
         super().__init__(self.commands)
         self.dice_controller = DiceController()
 
-    def assembly_message(self, event: Event, command_lines: [str]) -> str:
+    def assembly_message(self, user, command_lines: [str]) -> str:
         message = ""
         for line in command_lines:
             command = self.cp.find_command_in_line(line)

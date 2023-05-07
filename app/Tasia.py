@@ -1,16 +1,9 @@
-from vk_api.longpoll import Event
-
 from app.Arkadia import Arkadia
 from app.CommandParser import CommandParser
 from app.Loaders import load_modules, load_commands
 
 from app import logger
-
-
-class TestEvent(Event):
-
-    def __init__(self, user_id = "test_user"):
-        self.user_id = user_id
+from app.UserFromDB import UserFromDB
 
 
 class Tasia:
@@ -35,7 +28,7 @@ class Tasia:
                 self.events_listen()
             except KeyboardInterrupt:
                 self.logger.write_and_print("Выполнено отключение бота извне!")
-                self.logger.save_logs()
+                # self.logger.save_logs()
 
     def events_listen(self):
         while True:
@@ -50,5 +43,5 @@ class Tasia:
         message = ""
         for module in self._modules:
             if Arkadia.has_correct_api(module) and module.has_commands(command_lines):
-                message += module.assembly_message(TestEvent(), command_lines)
+                message += module.assembly_message(UserFromDB("test_user"), command_lines)
         return message
