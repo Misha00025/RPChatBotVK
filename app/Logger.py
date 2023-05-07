@@ -42,4 +42,4 @@ class Logger:
     def save_logs(self):
         if not os.path.exists("logs"):
             os.mkdir("logs")
-        shutil.copyfile(self._log_file_name, os.path.join("logs",f"{self._start_time_str}_{self._log_file_name}"))
+        shutil.copyfile(self._log_file_name, os.path.join("logs",f"{_get_datetime()}_{self._log_file_name}"))

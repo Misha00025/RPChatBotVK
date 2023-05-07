@@ -1,7 +1,9 @@
 import random
 import sys
+from time import sleep
 
 import vk_api
+from requests.exceptions import ReadTimeout, ConnectionError
 from vk_api.longpoll import VkLongPoll, VkEventType, Event
 from vk_api.utils import get_random_id
 from vk_api.vk_api import VkApi
@@ -32,18 +34,32 @@ class Arkadia:
         self.vk = self.vk_session.get_api()
 
     def start(self):
+        error = "First connect"
         while True:
             try:
+                self._connect(error)
+                self.log.only_print(f'Бот "{self.name}" успешно подключился к серверам ВК')
                 self.events_listen()
-            except vk_api.exceptions.ApiError as err:
-                self.log.only_write(err)
-                self.log.only_print("Переподключение")
-                self._init_vk_session()
-                self.log.only_print(f'Бот "{self.name}" успешно переподключился к серверам ВК')
+            except ReadTimeout as err:
+                self.log.only_print("Попытка переподключения")
+                error = err
+            except ConnectionError as err:
+                sleep(60)
+                self.log.only_print("Попытка переподключения")
+                error = err
             except KeyboardInterrupt:
                 self.log.write_and_print("Выполнено отключение бота извне!")
                 self.log.save_logs()
                 break
+            except Exception as err:
+                self.log.only_print("Произошла непредвиденная ошибка! Проверьте логи!")
+                error = err
+                self.log.save_logs()
+
+    def _connect(self, err):
+        self.log.only_write(err)
+        self._init_vk_session()
+        longpoll = VkLongPoll(self.vk_session)
 
     def events_listen(self):
         longpoll = VkLongPoll(self.vk_session)
