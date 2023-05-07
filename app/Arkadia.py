@@ -2,7 +2,7 @@ import random
 import sys
 
 import vk_api
-from vk_api.longpoll import VkLongPoll, VkEventType
+from vk_api.longpoll import VkLongPoll, VkEventType, Event
 from vk_api.utils import get_random_id
 from vk_api.vk_api import VkApi
 
@@ -52,7 +52,7 @@ class Arkadia:
 
                 request = str(event.text).lower()
                 command_lines: [(str, str)] = self.command_parcer.find_command_lines(request)
-                message = self.assembly_message(command_lines)
+                message = self.assembly_message(event, command_lines)
 
                 if event.from_chat:
                     self.write_msg_to_chat(event.chat_id, message)
@@ -61,11 +61,11 @@ class Arkadia:
                     self.write_msg(event.user_id, message)
                     self.log.write_and_print(f'Message from user_{event.user_id}: {request}')
 
-    def assembly_message(self, command_lines: [str]):
+    def assembly_message(self, event: Event, command_lines: [str]):
         message = ""
         for module in self._modules:
             if self.has_correct_api(module) and module.has_commands(command_lines):
-                message += module.assembly_message(command_lines) + "\n\n"
+                message += module.assembly_message(event, command_lines) + "\n\n"
         return message
 
     def write_msg(self, user_id, message):
