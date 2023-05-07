@@ -1,8 +1,17 @@
+from vk_api.longpoll import Event
+
 from app.Arkadia import Arkadia
 from app.CommandParser import CommandParser
 from app.Loaders import load_modules, load_commands
 
 from app import logger
+
+
+class TestEvent(Event):
+
+    def __init__(self, user_id = "test_user"):
+        self.user_id = user_id
+
 
 class Tasia:
 
@@ -18,6 +27,7 @@ class Tasia:
         self._commands = load_commands(self._modules, Arkadia.has_correct_api)
         self.command_parser = CommandParser(self._commands, "")
 
+        self.logger.write_and_print(f"Commands: {self._commands}")
         self.logger.write_and_print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
 
     def start(self):
@@ -40,5 +50,5 @@ class Tasia:
         message = ""
         for module in self._modules:
             if Arkadia.has_correct_api(module) and module.has_commands(command_lines):
-                message += module.assembly_message(None, command_lines)
+                message += module.assembly_message(TestEvent(), command_lines)
         return message

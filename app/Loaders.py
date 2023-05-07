@@ -2,6 +2,7 @@ import inspect
 import os
 import sys
 
+from app.modules.CharactersModule.CharacterAPI import CharacterAPI
 from app.modules.DiceModule import DicesAPI
 from app.modules.BaseModule import BaseAPI
 
@@ -33,7 +34,7 @@ def load_modules(is_valid=lambda entity: True):
     modules = []
 
     modules.append(BaseAPI.BaseAPI())
-    #modules.append(CharacterAPI.CharacterAPI())
+    modules.append(CharacterAPI())
     modules.append(DicesAPI.DicesAPI())
 
     return modules
