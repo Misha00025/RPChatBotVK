@@ -1,3 +1,5 @@
+from vk_api.longpoll import Event
+
 from .DiceController import DiceController
 from app.modules.BaseModule.BaseAPI import BaseAPI
 
@@ -9,7 +11,7 @@ class DicesAPI(BaseAPI):
         super().__init__(self.commands)
         self.dice_controller = DiceController()
 
-    def assembly_message(self, command_lines: [str]) -> str:
+    def assembly_message(self, event: Event, command_lines: [str]) -> str:
         message = ""
         for line in command_lines:
             command = self.cp.find_command_in_line(line)

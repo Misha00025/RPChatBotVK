@@ -2,7 +2,7 @@ from app.Arkadia import Arkadia
 from app.CommandParser import CommandParser
 from app.Loaders import load_modules, load_commands
 
-from app.Logger import Logger
+from app import logger
 
 class Tasia:
 
@@ -10,17 +10,22 @@ class Tasia:
 
         self.name = "Тася"
 
+        self.logger = logger
+        self.logger.write_datetime_in_console()
+        # self.logger.write_errors_in_file()
+
         self._modules = load_modules(Arkadia.has_correct_api)
         self._commands = load_commands(self._modules, Arkadia.has_correct_api)
         self.command_parser = CommandParser(self._commands, "")
 
-        self.logger = Logger()
-        self.logger.write_datetime_in_console()
-        self.logger.write_errors_in_file()
         self.logger.write_and_print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
 
     def start(self):
-        self.events_listen()
+            try:
+                self.events_listen()
+            except KeyboardInterrupt:
+                self.logger.write_and_print("Выполнено отключение бота извне!")
+                self.logger.save_logs()
 
     def events_listen(self):
         while True:
@@ -35,5 +40,5 @@ class Tasia:
         message = ""
         for module in self._modules:
             if Arkadia.has_correct_api(module) and module.has_commands(command_lines):
-                message += module.assembly_message(command_lines)
+                message += module.assembly_message(None, command_lines)
         return message

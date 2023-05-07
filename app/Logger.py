@@ -5,8 +5,10 @@ import datetime
 
 import config
 
+
 def _get_datetime():
     return datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+
 
 class Logger:
 

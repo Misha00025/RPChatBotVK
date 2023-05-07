@@ -8,7 +8,7 @@ from vk_api.vk_api import VkApi
 
 from app.CommandParser import CommandParser
 from app.Loaders import load_modules, load_commands
-from app.Logger import Logger
+from app import logger
 
 
 class Arkadia:
@@ -22,7 +22,7 @@ class Arkadia:
         self._commands = load_commands(self._modules, self.has_correct_api)
         self.command_parcer = CommandParser(self._commands, "/")
 
-        self.log = Logger()
+        self.log = logger
         # self.log.write_errors_in_file()
         self.log.write_datetime_in_console()
         self.log.write_and_print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
