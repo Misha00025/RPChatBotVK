@@ -6,7 +6,7 @@ from app import logger
 from app.UserFromDB import UserFromDB
 
 
-class Tasia:
+class Tasia (Arkadia):
 
     def __init__(self, version):
 
@@ -37,11 +37,5 @@ class Tasia:
                 break
             command_lines = self.command_parser.find_command_lines(message)
             self.logger.only_write(f"Input commands: {command_lines}")
-            self.logger.write_and_print(self.assembly_message(command_lines))
+            self.logger.write_and_print(self.assembly_message(UserFromDB("test_user"), command_lines))
 
-    def assembly_message(self, command_lines: [str]):
-        message = ""
-        for module in self._modules:
-            if Arkadia.has_correct_api(module) and module.has_commands(command_lines):
-                message += module.assembly_message(UserFromDB("test_user"), command_lines)
-        return message
