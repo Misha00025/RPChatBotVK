@@ -1,5 +1,6 @@
 from app.CommandParser import CommandParser
 from app.UserFromDB import UserFromDB
+from app.modules.CharactersModule.CharacterFromDB import CharacterFromDB
 
 
 class CommandExecuter:
@@ -19,7 +20,8 @@ class CommandExecuter:
 
     def execute_command(self, user, command_line):
         command = self.cp.find_command_in_line(command_line)
-        print(command)
+        if command is None:
+            return None
         return self.events[command](user, command_line)
 
     def create_character(self, user: UserFromDB, command_line):
@@ -28,7 +30,9 @@ class CommandExecuter:
         if parameters == "":
             return "Создать персонажа без имени нельзя"
         query = f"INSERT INTO public.\"character\"(owner_id, character_id, character_name) VALUES " \
-                f"('{user.get_user_id()}', {self._get_last_character_id(user)+1}, '{parameters}');"
+                f"('{user.get_user_id()}', " \
+                f"{CharacterFromDB.get_last_character_id(self.db, user) + 1}, " \
+                f"'{parameters}');"
         try:
             self.db.execute(query)
             message = "Персонаж успешно создан"
@@ -37,12 +41,16 @@ class CommandExecuter:
         return message
 
     def get_character(self, user: UserFromDB, command_line):
-        pass
+        parameters = self.cp.find_parameters_in_line(command_line)
+        prefix = self.cp.find_prefix_in_line(command_line)
+        if parameters in ["", "все", "all"] and prefix == "":
+            return CharacterFromDB.get_all_characters(user)
+        if prefix.isalnum():
+            character_id = int(prefix)
+        else:
+            return CharacterFromDB.get_all_characters(user)
+        character = CharacterFromDB(user, character_id)
+        return character.to_message()
 
-    def _get_last_character_id(self, user) -> int:
-        query = f"SELECT character_id FROM public.\"character\" WHERE owner_id = '{user.get_user_id()}';"
-        res = self.db.fetchall(query)
-        if len(res) == 0:
-            return 0
-        return int(res[len(res)-1][0])
+
 

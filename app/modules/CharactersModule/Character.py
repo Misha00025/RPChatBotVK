@@ -3,12 +3,20 @@
 class Character:
 
     def __init__(self, name=""):
-        self.fields = {}
-        self.fields["name"] = name
-        self.fields["strong"] = 0
-        self.fields["vitality"] = 0
-        self.fields["agility"] = 0
+        self.owner = None
+        self.id = None
+        self.name = name
+        self.properties: {} = None
+        self.stats: {} = None
+        self.items: {} = None
 
+    def to_message(self):
+        if not self.exist():
+            return "Такого персонажа не существует!"
+        message = f"Персонаж {self.id}:\n" \
+                  f"--Имя: {self.name}\n" \
+                  f"--Предметы: {self.items}"
+        return message
 
-    def get_fields(self) -> dict:
-        return self.fields
+    def exist(self):
+        return self.id is not None
