@@ -67,7 +67,7 @@ class Arkadia:
         for event in longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW and not event.from_group:
 
-                request = str(event.text).lower()
+                request = event.text
                 command_lines: [(str, str)] = self.command_parcer.find_command_lines(request)
                 user = UserFromDB(event.user_id)
                 message = self.assembly_message(user, command_lines)
@@ -83,7 +83,10 @@ class Arkadia:
         message = ""
         for module in self._modules:
             if self.has_correct_api(module) and module.has_commands(command_lines):
-                message += module.assembly_message(user, command_lines) + "\n\n"
+                module_message = module.assembly_message(user, command_lines)
+                if module_message is None:
+                    continue
+                message += module_message + "\n\n"
         return message
 
     def write_msg(self, user_id, message):

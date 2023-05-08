@@ -27,7 +27,7 @@ class DiceController:
     def __init__(self):
         self._random = random.Random()
 
-    def execute_command(self, command: str, parameters: str, prefix: str) -> str:
+    def execute_command(self, command: str, parameters: str, prefix: str) -> str | None:
         '''
         :param command, parameters:
         :return message:
@@ -45,12 +45,12 @@ class DiceController:
                 formula = str(result_dice) + parameters[len(dice):]
                 return f"Результат броска {prefix}{command}{parameters}: {ne.evaluate(formula)} ({formula})"
         else:
-            return "Не могу выполнить команду :("
+            return None
 
     def is_correct_parameters(self, parameters: str) -> bool:
         #TODO: Сделать проверку символов + и -. Добавить проверку префикса
 
-        return True  # parameters.isalnum()
+        return _get_first_num(parameters).isalnum()
 
     def roll_dices(self, count: str, parameters) -> str:
         dices_sum = self.roll_dice(parameters)

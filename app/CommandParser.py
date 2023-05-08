@@ -29,6 +29,7 @@ class CommandParser():
         return line[:command_start]
 
     def find_command_in_line(self, line: str) -> str | None:
+        line = line.lower()
         for command_from_list in self._commands:
             command_start = line.find(command_from_list)
             if command_start == -1:
@@ -37,9 +38,10 @@ class CommandParser():
         return None
 
     def find_parameters_in_line(self, line: str, command: str = "") -> str:
+        low_line = line.lower()
         if command == "":
             command = self.find_command_in_line(line)
-        command_end = line.find(command) + len(command)
+        command_end = low_line.find(command) + len(command)
         if command_end == len(command)-1:
             return ""
         return line[command_end:]
