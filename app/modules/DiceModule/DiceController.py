@@ -27,7 +27,7 @@ class DiceController:
     def __init__(self):
         self._random = random.Random()
 
-    def execute_command(self, command: str, parameters: str, prefix: str) -> str | None:
+    def execute_command(self, command: str, parameters: str, prefix: str):
         '''
         :param command, parameters:
         :return message:
