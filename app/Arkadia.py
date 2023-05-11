@@ -26,7 +26,7 @@ class Arkadia:
         self.command_parcer = CommandParser(self._commands, "/")
 
         self.log = logger
-        # self.log.write_errors_in_file()
+        self.log.write_errors_in_file()
         self.log.write_datetime_in_console()
         self.log.write_and_print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
 
@@ -55,10 +55,10 @@ class Arkadia:
             except Exception as err:
                 self.log.only_print("Произошла непредвиденная ошибка! Проверьте логи!")
                 error = err
-                self.log.save_logs()
 
     def _connect(self, err):
         self.log.only_write(err)
+        self.log.save_logs()
         self._init_vk_session()
         longpoll = VkLongPoll(self.vk_session)
 
