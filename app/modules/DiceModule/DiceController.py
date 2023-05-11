@@ -38,18 +38,17 @@ class DiceController:
             if prefix != "" and prefix.isalnum():
                 result_dice = self.roll_dices(prefix, dice)
             else:
-                result_dice = _decorate_dice(self.roll_dice(dice), dice)
+                result_dice = self.roll_dice(dice), dice
             if dice == parameters:
                 return f"Результат броска {prefix}{command}{parameters}: {result_dice}"
             else:
                 formula = str(result_dice) + parameters[len(dice):]
-                return f"Результат броска {prefix}{command}{parameters}: {ne.evaluate(formula)} ({formula})"
+                formula_to_print = _decorate_dice(result_dice, dice) + parameters[len(dice):]
+                return f"Результат броска {prefix}{command}{parameters}: {ne.evaluate(formula)} ({formula_to_print})"
         else:
             return None
 
     def is_correct_parameters(self, parameters: str) -> bool:
-        #TODO: Сделать проверку символов + и -. Добавить проверку префикса
-
         return _get_first_num(parameters).isalnum()
 
     def roll_dices(self, count: str, parameters) -> str:
