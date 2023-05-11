@@ -38,7 +38,8 @@ class DiceController:
             if prefix != "" and prefix.isalnum():
                 result_dice = self.roll_dices(prefix, dice)
             else:
-                result_dice = self.roll_dice(dice), dice
+                result_dice = self.roll_dice(dice)
+
             if dice == parameters:
                 return f"Результат броска {prefix}{command}{parameters}: {result_dice}"
             else:
