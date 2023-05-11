@@ -27,11 +27,11 @@ class UserFromDB:
     def exist(self):
         return self.user is not None
 
-    def _create_user(self, user_id) -> str | None:
+    def _create_user(self, user_id):
         query = f"INSERT INTO public.vk_user(vk_user_id) VALUES ('{user_id}');"
         self.database.execute(query)
         return self._get_from_db(user_id)
 
-    def _get_from_db(self, user_id) -> str | None:
+    def _get_from_db(self, user_id):
         query = f"SELECT * FROM public.vk_user WHERE vk_user_id = '{user_id}';"
         return self.database.fetchone(query)

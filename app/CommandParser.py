@@ -42,7 +42,7 @@ class CommandParser():
             command = self.find_command_in_line(line)
         return _find_in_line(line, command, len(command))
 
-    def find_command_in_line(self, line: str) -> str | None:
+    def find_command_in_line(self, line: str):
         line = line.lower()
         for command_from_list in self._commands:
             command_start = line.find(command_from_list)
