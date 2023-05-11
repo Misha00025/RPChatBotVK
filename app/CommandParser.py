@@ -1,3 +1,15 @@
+def _find_in_line(line: str, command, offset: int = 0):
+    low_line = line.lower()
+    command_pos = low_line.find(command) + offset
+    if offset == 0:
+        if command_pos <= 0:
+            return ""
+        line = line[:command_pos]
+    else:
+        if command_pos == offset - 1:
+            return ""
+        line = line[command_pos:]
+    return line.strip()
 
 
 class CommandParser():
@@ -23,10 +35,12 @@ class CommandParser():
     def find_prefix_in_line(self, line: str, command: str = "") -> str:
         if command == "":
             command = self.find_command_in_line(line)
-        command_start = line.find(command)
-        if command_start <= 0:
-            return ""
-        return line[:command_start].strip()
+        return _find_in_line(line, command, 0)
+
+    def find_parameters_in_line(self, line: str, command: str = "") -> str:
+        if command == "":
+            command = self.find_command_in_line(line)
+        return _find_in_line(line, command, len(command))
 
     def find_command_in_line(self, line: str) -> str | None:
         line = line.lower()
@@ -36,12 +50,3 @@ class CommandParser():
                 continue
             return command_from_list
         return None
-
-    def find_parameters_in_line(self, line: str, command: str = "") -> str:
-        low_line = line.lower()
-        if command == "":
-            command = self.find_command_in_line(line)
-        command_end = low_line.find(command) + len(command)
-        if command_end == len(command)-1:
-            return ""
-        return line[command_end:].strip()
