@@ -28,6 +28,7 @@ class Logger:
     def only_write(self, msg: str):
         with open(self._log_file_name, "a") as log_file:
             try:
+                msg = str(msg)
                 msg = msg.replace('\U0001f4a5', 'BOOM!')
                 msg = msg.replace("\U0001f480", 'OPS!')
                 log_file.write(f"[{_get_datetime()}] {msg}\n")
