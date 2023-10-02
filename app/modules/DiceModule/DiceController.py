@@ -1,12 +1,21 @@
 import random
-import numexpr as ne
+
+
+decorators = [" &#128165;", " &#128128;"]
+
+
+def redecorate(line: str) -> str:
+    result = line
+    for decorator in decorators:
+        result = result.replace(decorator, "")
+    return result
 
 
 def _decorate_dice(result: int, dice) -> str:
     if result == 20 and int(dice) == 20:
-        result = str(result) + " &#128165;"
+        result = str(result) + decorators[0]
     elif result == 1 and int(dice) == 20:
-        result = str(result) + " &#128128;"
+        result = str(result) + decorators[1]
     return str(result)
 
 
@@ -35,32 +44,31 @@ class DiceController:
         # print(f"{prefix}{command}{parameters}")
         if self.is_correct_parameters(parameters):
             dice = _get_first_num(parameters)
+            result_line = ""
             if prefix != "" and prefix.isalnum():
-                result_dice = self.roll_dices(prefix, dice)
+                results_dice = self.roll_dices(prefix, dice)
+                results = ""
+                for res in results_dice:
+                    if results != "":
+                        results += " + "
+                    results += f"{_decorate_dice(res, dice)}"
+                result_line = f"({results})"
             else:
                 result_dice = self.roll_dice(dice)
-
-            if dice == parameters:
-                return f"Результат броска {prefix}{command}{parameters}: {result_dice}"
-            else:
-                formula = str(result_dice) + parameters[len(dice):]
-                formula_to_print = _decorate_dice(result_dice, dice) + parameters[len(dice):]
-                return f"Результат броска {prefix}{command}{parameters}: {ne.evaluate(formula)} ({formula_to_print})"
+                result_line = _decorate_dice(result_dice, dice)
+            return result_line
         else:
             return None
 
     def is_correct_parameters(self, parameters: str) -> bool:
         return _get_first_num(parameters).isalnum()
 
-    def roll_dices(self, count: str, parameters) -> str:
-        dices_sum = self.roll_dice(parameters)
-        dices_sum_str: str = "(" + str(dices_sum)
-        for __ in range(int(count)-1):
+    def roll_dices(self, count: str, parameters) -> [int]:
+        results = []
+        for __ in range(int(count)):
             dice_result = self.roll_dice(parameters)
-            dices_sum_str += " + " + _decorate_dice(dice_result, parameters)
-            dices_sum += dice_result
-        res = str(dices_sum) + " " + dices_sum_str + ")"
-        return res
+            results.append(dice_result)
+        return results
 
     def roll_dice(self, dice) -> int:
         result = 1 + int(self._random.random() * int(dice))
