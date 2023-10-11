@@ -134,3 +134,4 @@ token.txt
 log.txt
 /logs
 test.py
+/db_config.ini
