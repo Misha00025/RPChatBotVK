@@ -1,5 +1,5 @@
-import psycopg2
-from psycopg2 import Error
+from .data_bases.PostgreSQLDB import PostgreSQLDB
+from .data_bases.MySQLDB import MySQLDB
 
 
 class DataBase:
@@ -8,6 +8,7 @@ class DataBase:
     def __init__(self, logger: Logger = None):
         from config import connection_settings
         if connection_settings is not None:
+            self.type = connection_settings["Type"]
             dbname = connection_settings["DataBaseName"]
             user = connection_settings["User"]
             password = connection_settings["Password"]
@@ -25,28 +26,21 @@ class DataBase:
 
     def execute(self, query):
         try:
-            with self.__connection:
-                self.__cursor.execute(query)
+            self._subdb.execute(query)
         except Exception as err:
             self.logger.write_and_print(err)
             return None
 
     def fetchone(self, query):
         try:
-            with self.__connection:
-                self.__cursor.execute(query)
-                result = self.__cursor.fetchone()
-            return result
+            return self._subdb.fetchone(query)
         except Exception as err:
             self.logger.write_and_print(err)
             return None
 
     def fetchall(self, query):
         try:
-            with self.__connection:
-                self.__cursor.execute(query)
-                result = self.__cursor.fetchall()
-            return result
+            return self._subdb.fetchall(query)
         except Exception as err:
             self.logger.write_and_print(err)
             return None
@@ -58,26 +52,32 @@ class DataBase:
         """
         self.logger.write_and_print(f'DataBase.connect(): устанавливаю соединение;')
         try:
-            self.__connection = psycopg2.connect(dbname=dbname,
-                                                 user=user,
-                                                 password=password,
-                                                 host=host,
-                                                 port=port)
-            self.__cursor = self.__connection.cursor()
+            self._subdb = self._get_connector()(dbname=dbname,
+                                     user=user,
+                                     password=password,
+                                     host=host,
+                                     port=port)
             self.logger.write_and_print(f'DataBase.connect():\033[32m соединение установлено;\033[0m\n')
             return 0, dbname
-        except (Exception, Error) as error:
+        except Exception as error:
             self.logger.write_and_print(f'\033[31mDataBase.connect(): не удается установить соединение с базой данных: {error}\033[0m')
-            self.__connection = None
+            self._subdb = None
             return 1, error
 
     def _disconnect(self):
         """
         Закрывает соединение с базой данной.
         """
-        self.__cursor.close()
-        self.__connection.close()
-        self.__connection = None
+        self._subdb = None
         self.logger.write_and_print(f'DataBase.connect(): соединение с базой данных закрыто;')
 
-
+    def _get_connector(self):
+        connector = None
+        type = self.type
+        connectors = {
+            "PostgreSQL": PostgreSQLDB,
+            "MySQL": MySQLDB
+        }
+        if type in connectors.keys():
+            connector = connectors[type]
+        return connector
