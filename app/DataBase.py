@@ -22,7 +22,7 @@ class DataBase:
             self._connect(dbname, user, password, host, port)
 
     def is_connected(self):
-        return self.__connection is not None
+        return self._subdb is not None
 
     def execute(self, query):
         try:
