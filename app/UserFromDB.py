@@ -27,7 +27,7 @@ class UserFromDB:
         return self._is_admin
 
     def make_admin(self):
-        query = f"UPDATE public.vk_user SET is_admin=true WHERE vk_user_id = '{self._user_id}';"
+        query = f"UPDATE vk_user SET is_admin=true WHERE vk_user_id = '{self._user_id}';"
         self.database.execute(query)
         self.user = self._get_from_db(self._user_id)
         self._is_admin = self.user[1]
@@ -36,10 +36,10 @@ class UserFromDB:
         return self.user is not None
 
     def _create_user(self, user_id):
-        query = f"INSERT INTO public.vk_user(vk_user_id) VALUES ('{user_id}');"
+        query = f"INSERT INTO vk_user(vk_user_id) VALUES ('{user_id}');"
         self.database.execute(query)
         return self._get_from_db(user_id)
 
     def _get_from_db(self, user_id):
-        query = f"SELECT * FROM public.vk_user WHERE vk_user_id = '{user_id}';"
+        query = f"SELECT * FROM vk_user WHERE vk_user_id = '{user_id}';"
         return self.database.fetchone(query)
