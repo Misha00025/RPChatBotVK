@@ -11,6 +11,9 @@ class PostgreSQLDB:
                                              port=port)
         self.__cursor = self.__connection.cursor()
 
+    def is_connected(self):
+        return self.__connection is not None
+
     def execute(self, query):
         with self.__connection:
             self.__cursor.execute(query)

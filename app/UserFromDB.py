@@ -9,8 +9,12 @@ class UserFromDB:
             self.user = self._get_from_db(user_id)
             if self.user is None:
                 self.user = self._create_user(user_id)
-            self._user_id = self.user[0]
-            self._is_admin = self.user[1]
+            try:
+                self._user_id = self.user[0]
+                self._is_admin = self.user[1]
+            except:
+                self._user_id = "unnamed"
+                self._is_admin = False
 
     def get_user_id(self):
         if not self.database.is_connected():
