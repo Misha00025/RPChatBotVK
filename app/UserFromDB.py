@@ -13,9 +13,13 @@ class UserFromDB:
             self._is_admin = self.user[1]
 
     def get_user_id(self):
+        if not self.database.is_connected():
+            return 0
         return self._user_id
 
     def is_admin(self):
+        if not self.database.is_connected():
+            return False
         return self._is_admin
 
     def make_admin(self):
