@@ -1,9 +1,8 @@
-
+from app import database
 
 class UserFromDB:
 
     def __init__(self, user_id):
-        from app import database
         self.database = database
         if database.is_connected():
             self.user = self._get_from_db(user_id)

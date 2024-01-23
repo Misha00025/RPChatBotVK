@@ -1,5 +1,6 @@
 from app.CommandParser import CommandParser
 from app.UserFromDB import UserFromDB
+from app.modules.CharactersModule.Character import Character
 from app.modules.CharactersModule.CharacterFromDB import CharacterFromDB
 
 
@@ -29,12 +30,10 @@ class CommandExecuter:
         message = ""
         if parameters == "":
             return "Создать персонажа без имени нельзя"
-        query = f"INSERT INTO public.\"character\"(owner_id, character_id, character_name) VALUES " \
-                f"('{user.get_user_id()}', " \
-                f"{CharacterFromDB.get_last_character_id(self.db, user) + 1}, " \
-                f"'{parameters}');"
+
         try:
-            self.db.execute(query)
+            character = Character(parameters)
+            CharacterFromDB(user, character=character).save()
             message = "Персонаж успешно создан"
         except Exception as err:
             message = err
@@ -49,7 +48,7 @@ class CommandExecuter:
             character_id = int(prefix)
         else:
             return CharacterFromDB.get_all_characters(user)
-        character = CharacterFromDB(user, character_id)
+        character = CharacterFromDB(user, character_id).character
         return character.to_message()
 
 

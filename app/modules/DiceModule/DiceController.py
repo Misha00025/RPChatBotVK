@@ -42,7 +42,7 @@ class DiceController:
         :return message:
         '''
         # print(f"{prefix}{command}{parameters}")
-        if self.is_correct_parameters(parameters):
+        try:
             dice = _get_first_num(parameters)
             result_line = ""
             if prefix != "" and prefix.isalnum():
@@ -57,7 +57,7 @@ class DiceController:
                 result_dice = self.roll_dice(dice)
                 result_line = _decorate_dice(result_dice, dice)
             return result_line
-        else:
+        except:
             return None
 
     def is_correct_parameters(self, parameters: str) -> bool:

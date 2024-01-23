@@ -26,7 +26,7 @@ class DataBase:
 
     def execute(self, query):
         try:
-            self._subdb.execute(query)
+            return self._subdb.execute(query)
         except Exception as err:
             self.logger.write_and_print(err)
             return None

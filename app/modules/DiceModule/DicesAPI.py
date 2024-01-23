@@ -82,9 +82,12 @@ class DicesAPI(BaseAPI):
                     continue
                 prefix, command, parameters = commands
                 if command in self.commands:
-                    sublines_with_results.append((subline, self.dice_controller.execute_command(command, parameters, prefix)))
-            formula = replace(line, sublines_with_results)
+                    result = self.dice_controller.execute_command(command, parameters, prefix)
+                    sublines_with_results.append((subline, result))
+            try:
+                formula = replace(line, sublines_with_results)
+            except:
+                return None
             clean_formula = redecorate(formula)
-
             message += f"Результат броска {line}: {ne.evaluate(clean_formula)} ({formula}) \n"
         return message
