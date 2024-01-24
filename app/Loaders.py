@@ -5,6 +5,7 @@ import sys
 from app.modules.CharactersModule.CharacterAPI import CharacterAPI
 from app.modules.DiceModule import DicesAPI
 from app.modules.BaseModule import BaseAPI
+from app.modules.NotesModule.NotesAPI import NotesAPI
 
 
 def auto_load_modules_from(path, is_valid=lambda entity: True):
@@ -36,6 +37,7 @@ def load_modules(is_valid=lambda entity: True):
     modules.append(BaseAPI.BaseAPI())
     modules.append(CharacterAPI())
     modules.append(DicesAPI.DicesAPI())
+    modules.append(NotesAPI())
 
     return modules
 

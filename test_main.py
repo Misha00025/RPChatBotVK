@@ -1,4 +1,7 @@
 #!./venv/bin/python
+from app.modules.BaseModule.BaseAPI import BaseAPI
+from app.modules.CharactersModule.CharacterAPI import CharacterAPI
+from app.modules.NotesModule.NotesAPI import NotesAPI
 
 
 def dialog():
@@ -8,12 +11,9 @@ def dialog():
     application.start()
 
 
-def auto():
-    from app.modules.CharactersModule.CharacterAPI import CharacterAPI
+def auto(api: BaseAPI, commands: []):
     from app.UserFromDB import UserFromDB
-    api = CharacterAPI()
     user = UserFromDB('test_user')
-    commands = [""]
     for command in commands:
         print(f"Command: {command}")
         print(f"Answer: {api.assembly_message(user, [command])}")
@@ -26,7 +26,9 @@ def db_test():
     print(f"Status: {database.execute(query)}")
 
 
+
+
 if __name__ == "__main__":
     # db_test()
-    auto()
-
+    auto(NotesAPI(), ["заметки записать: заметка1", "заметки", "заметки удалить 1"])
+    # dialog()
