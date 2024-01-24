@@ -17,7 +17,7 @@ class MySQLDB:
                                             password=self._pwd,
                                             host=self._host,
                                             charset='utf8',
-                                            cursorclass=pymysql.cursors.DictCursor)
+                                            cursorclass=pymysql.cursors.SSCursor)
         self.__cursor = self.__connection.cursor()
 
     def is_connected(self):
@@ -26,6 +26,7 @@ class MySQLDB:
     def execute(self, query):
         with self.__connection.cursor() as cursor:
             result = cursor.execute(query)
+            self.__connection.commit()
         return result
 
     def fetchone(self, query):
