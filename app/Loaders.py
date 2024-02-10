@@ -35,7 +35,7 @@ def load_modules(is_valid=lambda entity: True):
     modules = []
 
     modules.append(BaseAPI.BaseAPI())
-    modules.append(CharacterAPI())
+    # modules.append(CharacterAPI())
     modules.append(DicesAPI.DicesAPI())
     modules.append(NotesAPI())
 

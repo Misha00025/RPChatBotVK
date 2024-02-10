@@ -13,16 +13,23 @@ def dialog():
 
 def auto(api: BaseAPI, commands: []):
     from app.UserFromDB import UserFromDB
-    user = UserFromDB('test_user')
+    user = UserFromDB('173745999')
+    class Ev:
+        group_id = "-101"
+    user.from_event = Ev()
     for command in commands:
         print(f"Command: {command}")
-        print(f"Answer: {api.assembly_message(user, [command])}")
+        print(f"Answer: {api.assembly_message(user, command)}")
 
 
 def db_test():
     from app import database
-    user_id = 'test_user'
+    user_id = 'test_user_2'
     query = f"INSERT INTO vk_user(vk_user_id) VALUES ('{user_id}');"
+    print(f"Status: {database.execute(query)}")
+    # query = f"INSERT INTO vk_user(vk_user_id) VALUES ('{user_id}');"
+    # print(f"Status: {database.execute(query)}")
+    query = f"DELETE FROM vk_user WHERE vk_user_id = '{user_id}';"
     print(f"Status: {database.execute(query)}")
 
 
@@ -30,5 +37,7 @@ def db_test():
 
 if __name__ == "__main__":
     # db_test()
-    auto(NotesAPI(), ["заметки записать: заметка1", "заметки", "заметки удалить 1"])
+    api = NotesAPI()
+    print(api.commands)
+    auto(api, [["заметки записать: заметка1", "Я проверяю заметку"], ["заметки"], ["заметки удалить 1"]])
     # dialog()

@@ -69,7 +69,7 @@ class Arkadia:
 
                 request = event.text
                 command_lines: [(str, str)] = self.command_parcer.find_command_lines(request)
-                user = UserFromDB(event.user_id)
+                user = UserFromDB(event.user_id, event)
                 message = self.assembly_message(user, command_lines)
 
                 if event.from_chat:

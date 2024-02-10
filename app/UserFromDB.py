@@ -1,8 +1,11 @@
+from vk_api.longpoll import Event
+
 from app import database
 
 class UserFromDB:
 
-    def __init__(self, user_id):
+    def __init__(self, user_id, event: Event = None):
+        self.from_event = event
         self.database = database
         if database.is_connected():
             self.user = self._get_from_db(user_id)

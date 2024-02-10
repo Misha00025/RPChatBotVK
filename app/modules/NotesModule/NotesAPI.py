@@ -3,8 +3,17 @@ from app.modules.BaseModule.BaseAPI import BaseAPI
 from app import database
 
 
-def _add_note(user: UserFromDB, note: str) -> str:
-    return ""
+def _add_note(user: UserFromDB, params: (str, str)) -> str:
+    header, body = params
+    if user.from_event is not None:
+        group_id = user.from_event.group_id
+        user_id = user.get_user_id()
+        query = f"INSERT INTO note(group_id, owner_id, header, description) VALUES " \
+                f"('{group_id}', '{user_id}', '{header}', '{body}')"
+        database.execute(query)
+        return "Запись успешно добавлена!"
+    return "Не получилось добавить запись, обратитесь к админу :(\n" \
+           "(Если он спросит, назовите код ошибки: 2.1)"
 
 
 def _get_notes(user: UserFromDB, page: str = "") -> str:
@@ -21,28 +30,41 @@ prefix = "заметки"
 class NotesAPI(BaseAPI):
 
     def __init__(self):
-        self.commands = ["", "записать:", "удалить"]
+        self.commands = ["записать:", "удалить"]
         for i in range(len(self.commands)):
             if self.commands[i] == "":
                 self.commands[i] = prefix
                 continue
             self.commands[i] = prefix + " " + self.commands[i]
         self._actions: {} = {
-            self.commands[0]: lambda user, b: _get_notes(user, b),
-            self.commands[1]: lambda user, b: _add_note(user, b),
-            self.commands[2]: lambda user, b: _del_note(user, b)
+            # self.commands[0]: lambda user, b: _get_notes(user, b),
+            self.commands[0]: lambda user, b: _add_note(user, b),
+            self.commands[1]: lambda user, b: _del_note(user, b)
         }
         super().__init__(self.commands)
 
     def assembly_message(self, user, command_lines: [str]) -> str:
         answer = ""
+        start_add = False
+        header = ""
+        note = ""
         for line in command_lines:
             command = self.cp.find_command_in_line(line)
-            parameters = self.cp.find_parameters_in_line(line, command)
+            if command == self.commands[0]:
+                start_add = True
+                parameters = self.cp.find_parameters_in_line(line, command)
+                header = parameters
+                continue
+            elif start_add:
+                note += line + '\n'
+                continue
             if command in self._actions.keys():
+                parameters = self.cp.find_parameters_in_line(line, command)
                 answer += self._actions[command](user, parameters)
             else:
                 answer += "Команда не распознана"
+        if start_add:
+            answer += self._actions[self.commands[0]](user, (header, note))
         return answer
 
 
