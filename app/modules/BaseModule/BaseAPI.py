@@ -12,7 +12,7 @@ class BaseAPI:
         self.commands = commands
         self.cp = CommandParser(commands=self.commands)
 
-    def assembly_message(self, user: UserFromDB, command_lines: [str]) -> str:
+    def assembly_message(self, user: UserFromDB, command_lines: [str], request: str) -> str:
         pass
 
     def has_commands(self, command_lines) -> bool:

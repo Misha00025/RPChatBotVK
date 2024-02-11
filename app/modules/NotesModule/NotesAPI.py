@@ -5,8 +5,8 @@ from app import database
 
 def _add_note(user: UserFromDB, params: (str, str)) -> str:
     header, body = params
-    if user.from_event is not None:
-        group_id = user.from_event.group_id
+    if user.group_id is not None:
+        group_id = user.group_id
         user_id = user.get_user_id()
         query = f"INSERT INTO note(group_id, owner_id, header, description) VALUES " \
                 f"('{group_id}', '{user_id}', '{header}', '{body}')"
@@ -27,6 +27,11 @@ def _del_note(user: UserFromDB, note_id: str) -> str:
 prefix = "заметки"
 
 
+def find_note(line: str, request: str):
+    note = request.split(line+'\n')[1]
+    return note
+
+
 class NotesAPI(BaseAPI):
 
     def __init__(self):
@@ -43,28 +48,21 @@ class NotesAPI(BaseAPI):
         }
         super().__init__(self.commands)
 
-    def assembly_message(self, user, command_lines: [str]) -> str:
+    def assembly_message(self, user, command_lines: [str], request) -> str:
         answer = ""
-        start_add = False
-        header = ""
-        note = ""
         for line in command_lines:
             command = self.cp.find_command_in_line(line)
             if command == self.commands[0]:
-                start_add = True
                 parameters = self.cp.find_parameters_in_line(line, command)
                 header = parameters
-                continue
-            elif start_add:
-                note += line + '\n'
+                note = find_note(line, request)
+                answer += self._actions[self.commands[0]](user, (header, note))
                 continue
             if command in self._actions.keys():
                 parameters = self.cp.find_parameters_in_line(line, command)
                 answer += self._actions[command](user, parameters)
             else:
                 answer += "Команда не распознана"
-        if start_add:
-            answer += self._actions[self.commands[0]](user, (header, note))
         return answer
 
 

@@ -6,8 +6,9 @@ import vk_api
 from requests.exceptions import ReadTimeout, ConnectionError
 from vk_api.longpoll import VkLongPoll, VkEventType, Event
 from vk_api.utils import get_random_id
-from vk_api.vk_api import VkApi
+from vk_api.vk_api import VkApi, VkApiMethod
 
+import app
 from app.CommandParser import CommandParser
 from app.Loaders import load_modules, load_commands
 from app import logger
@@ -19,11 +20,12 @@ class Arkadia:
     def __init__(self, token, version, log_file):
         self.token = token
         self._init_vk_session()
-
         self.name = "Аркадия"
         self._modules = load_modules(Arkadia.has_correct_api)
         self._commands = load_commands(self._modules, self.has_correct_api)
-        self.command_parcer = CommandParser(self._commands, "/")
+        self.command_parcer = CommandParser(self._commands, "!")
+
+        self._load_group_info()
 
         self.log = logger
         self.log.write_errors_in_file()
@@ -32,7 +34,26 @@ class Arkadia:
 
     def _init_vk_session(self):
         self.vk_session = VkApi(token=self.token)
-        self.vk = self.vk_session.get_api()
+        self.vk: VkApiMethod = self.vk_session.get_api()
+
+    def _load_group_info(self):
+        import requests
+        data = f"v={self.vk_session.api_version}&access_token={self.token}&lang=0"
+        res = requests.post('https://api.vk.com/method/groups.getById', data=data)
+        json = res.json()["response"][0]
+        # print(json)
+        self.group_id = json["id"]
+        self.group_name = json["name"]
+        self._save_group()
+
+    def _save_group(self):
+        res = app.database.fetchone(f"SELECT * FROM vk_group WHERE vk_group_id = '{self.group_id}'")
+        if res is None:
+            app.database.execute(f"INSERT INTO vk_group(vk_group_id, group_name) "
+                                 f"VALUES ('{self.group_id}', '{self.group_name}')")
+        else:
+            app.database.execute(f"UPDATE vk_group SET group_name='{self.group_name}' "
+                                 f"WHERE vk_group_id='{self.group_id}'")
 
     def start(self):
         error = "First connect"
@@ -69,8 +90,8 @@ class Arkadia:
 
                 request = event.text
                 command_lines: [(str, str)] = self.command_parcer.find_command_lines(request)
-                user = UserFromDB(event.user_id, event)
-                message = self.assembly_message(user, command_lines)
+                user = UserFromDB(event.user_id, self.group_id)
+                message = self.assembly_message(user, command_lines, request)
 
                 if event.from_chat:
                     self.write_msg_to_chat(event.chat_id, message)
@@ -79,11 +100,11 @@ class Arkadia:
                     self.write_msg(event.user_id, message)
                     self.log.write_and_print(f'Message from user_{event.user_id}: {request}')
 
-    def assembly_message(self, user: UserFromDB, command_lines: [str]):
+    def assembly_message(self, user: UserFromDB, command_lines: [str], request):
         message = ""
         for module in self._modules:
             if self.has_correct_api(module) and module.has_commands(command_lines):
-                module_message = module.assembly_message(user, command_lines)
+                module_message = module.assembly_message(user, command_lines, request)
                 if module_message is None:
                     continue
                 message += module_message + "\n\n"

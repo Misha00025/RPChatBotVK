@@ -67,7 +67,7 @@ class DicesAPI(BaseAPI):
         super().__init__(self.commands)
         self.dice_controller = DiceController()
 
-    def assembly_message(self, user, command_lines: [str]) -> str:
+    def assembly_message(self, user, command_lines: [str], request) -> str:
         import numexpr as ne
         message = ""
         for line in command_lines:                
