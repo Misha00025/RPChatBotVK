@@ -1,6 +1,5 @@
 #!./venv/bin/python
 from app.modules.BaseModule.BaseAPI import BaseAPI
-from app.modules.CharactersModule.CharacterAPI import CharacterAPI
 from app.modules.NotesModule.NotesAPI import NotesAPI
 
 
@@ -11,7 +10,7 @@ def dialog():
     application.start()
 
 
-def auto(api: BaseAPI, commands: []):
+def auto(api: BaseAPI, commands: list):
     from app.UserFromDB import UserFromDB
     user = UserFromDB('173745999')
     class Ev:
@@ -19,7 +18,7 @@ def auto(api: BaseAPI, commands: []):
     user.from_event = Ev()
     for command in commands:
         print(f"Command: {command}")
-        print(f"Answer: {api.assembly_message(user, command)}")
+        print(f"Answer: {api.assembly_message(user, command, "\n".join(command))}")
 
 
 def db_test():

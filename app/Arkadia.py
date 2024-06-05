@@ -1,10 +1,7 @@
-import random
-import sys
 from time import sleep
 
-import vk_api
 from requests.exceptions import ReadTimeout, ConnectionError
-from vk_api.longpoll import VkLongPoll, VkEventType, Event
+from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.utils import get_random_id
 from vk_api.vk_api import VkApi, VkApiMethod
 
@@ -17,7 +14,7 @@ from app.UserFromDB import UserFromDB
 
 class Arkadia:
 
-    def __init__(self, token, version, log_file):
+    def __init__(self, token, version):
         self.token = token
         self._init_vk_session()
         self.name = "Аркадия"
@@ -63,25 +60,27 @@ class Arkadia:
                 self.log.only_print(f'Бот "{self.name}" успешно подключился к серверам ВК')
                 self.events_listen()
             except ReadTimeout as err:
-                self.log.only_print("Попытка переподключения")
-                error = err
+                self._reconnect(err)
             except ConnectionError as err:
-                sleep(60)
-                self.log.only_print("Попытка переподключения")
-                error = err
+                self._reconnect(err)
             except KeyboardInterrupt:
                 self.log.write_and_print("Выполнено отключение бота извне!")
                 self.log.save_logs()
                 break
             except Exception as err:
                 self.log.only_print("Произошла непредвиденная ошибка! Проверьте логи!")
+                self.log.save_logs()
                 error = err
+
+    def _reconnect(self, err):
+        sleep(60)
+        self.log.only_print("Попытка переподключения")
+        error = err
 
     def _connect(self, err):
         self.log.only_write(err)
         self.log.save_logs()
         self._init_vk_session()
-        longpoll = VkLongPoll(self.vk_session)
 
     def events_listen(self):
         longpoll = VkLongPoll(self.vk_session)
@@ -89,7 +88,7 @@ class Arkadia:
             if event.type == VkEventType.MESSAGE_NEW and not event.from_group:
 
                 request = event.text
-                command_lines: [(str, str)] = self.command_parcer.find_command_lines(request)
+                command_lines: list = self.command_parcer.find_command_lines(request)
                 user = UserFromDB(event.user_id, self.group_id)
                 message = self.assembly_message(user, command_lines, request)
 
@@ -100,7 +99,7 @@ class Arkadia:
                     self.write_msg(event.user_id, message)
                     self.log.write_and_print(f'Message from user_{event.user_id}: {request}')
 
-    def assembly_message(self, user: UserFromDB, command_lines: [str], request):
+    def assembly_message(self, user: UserFromDB, command_lines: list, request):
         message = ""
         for module in self._modules:
             if self.has_correct_api(module) and module.has_commands(command_lines):

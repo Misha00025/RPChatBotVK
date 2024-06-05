@@ -14,7 +14,7 @@ class DataBase:
             password = connection_settings["Password"]
             host = connection_settings["Host"]
             port = connection_settings["Port"]
-
+            self._subdb = self
             self.logger = logger
             if self.logger is None:
                 from app.Logger import Logger
@@ -80,4 +80,5 @@ class DataBase:
         }
         if type in connectors.keys():
             connector = connectors[type]
-        return connector
+            return connector
+        return MySQLDB

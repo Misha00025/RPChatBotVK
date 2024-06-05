@@ -1,3 +1,5 @@
+
+
 def _find_in_line(line: str, command, offset: int = 0):
     low_line = line.lower()
     command_pos = low_line.find(command) + offset
@@ -13,16 +15,19 @@ def _find_in_line(line: str, command, offset: int = 0):
 
 
 class CommandParser():
+    '''
+    Класс выполняющий задачу разбиения входящего сообщения на блоки
+    '''
 
-    def __init__(self, commands: [str], prefix="!"):
+    def __init__(self, commands: list, prefix="!"):
 
         self._start = prefix
         self._commands = commands
         # print(self._commands)
 
-    def find_command_lines(self, message: str) -> [str]:
+    def find_command_lines(self, message: str) -> list:
         lines = message.split("\n")
-        lines_with_commands: [str] = []
+        lines_with_commands: list = []
         for line in lines:
             start_pos = line.find(self._start)
             if start_pos == -1:
@@ -31,6 +36,15 @@ class CommandParser():
                 start_pos = -1
             lines_with_commands.append(line[start_pos+1:])
         return lines_with_commands
+
+    def find_command_in_line(self, line: str) -> str:
+        line = line.lower()
+        for command_from_list in self._commands:
+            command_start = line.find(command_from_list)
+            if command_start == -1:
+                continue
+            return command_from_list
+        return ""
 
     def find_prefix_in_line(self, line: str, command: str = "") -> str:
         if command == "":
@@ -42,11 +56,4 @@ class CommandParser():
             command = self.find_command_in_line(line)
         return _find_in_line(line, command, len(command))
 
-    def find_command_in_line(self, line: str):
-        line = line.lower()
-        for command_from_list in self._commands:
-            command_start = line.find(command_from_list)
-            if command_start == -1:
-                continue
-            return command_from_list
-        return None
+
