@@ -8,23 +8,22 @@ from vk_api.vk_api import VkApi, VkApiMethod
 import app
 from app.CommandParser import CommandParser
 from app.Loaders import load_modules, load_commands
-from app import logger
 from app.UserFromDB import UserFromDB
 
 
 class Arkadia:
 
-    def __init__(self, token, version):
+    def __init__(self, token, version, cmd_prefix):
         self.token = token
         self.name = "Аркадия"
         self._modules = load_modules(self.has_correct_api)
         self._commands = load_commands(self._modules, self.has_correct_api)
-        self.command_parcer = CommandParser(self._commands, "/")
+        self.command_parcer = CommandParser(self._commands, cmd_prefix)
 
         self._init_vk_session()
         self._load_group_info()
 
-        self.log = logger
+        self.log = app.logger
         self.log.write_errors_in_file()
         self.log.write_datetime_in_console()
         self.log.write_and_print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
@@ -82,11 +81,15 @@ class Arkadia:
         self.log.save_logs()
         self._init_vk_session()
 
+    def _is_valid_event(self, event):
+        is_new_message = event.type == VkEventType.MESSAGE_NEW
+        result = is_new_message
+        return result
+
     def events_listen(self):
         longpoll = VkLongPoll(self.vk_session)
         for event in longpoll.listen():
-            if event.type == VkEventType.MESSAGE_NEW and not event.from_group:
-
+            if self._is_valid_event(event):
                 request = event.text
                 command_lines: list = self.command_parcer.find_command_lines(request)
                 user = UserFromDB(event.user_id, self.group_id)
@@ -98,6 +101,10 @@ class Arkadia:
                 else:
                     self.write_msg(event.user_id, message)
                     self.log.write_and_print(f'Message from user_{event.user_id}: {request}')
+
+    def parce_event(self, event):
+        pass
+
 
     def assembly_message(self, user: UserFromDB, command_lines: list, request):
         message = ""

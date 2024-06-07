@@ -35,8 +35,10 @@ def db_test():
 
 
 if __name__ == "__main__":
+    import app
+    app.start(cmd_prefix="!")
     # db_test()
-    api = NotesAPI()
-    print(api.commands)
-    auto(api, [["заметки записать: заметка1", "Я проверяю заметку"], ["заметки"], ["заметки удалить 1"]])
+    # api = NotesAPI()
+    # print(api.commands)
+    # auto(api, [["заметки записать: заметка1", "Я проверяю заметку"], ["заметки"], ["заметки удалить 1"]])
     # dialog()
