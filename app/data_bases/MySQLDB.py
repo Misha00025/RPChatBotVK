@@ -8,7 +8,7 @@ class MySQLDB:
         self._user = user
         self._pwd = password
         self._host = host
-        self._port = port
+        self._port = int(port)
         self._connect()
 
     def _connect(self):
@@ -16,6 +16,7 @@ class MySQLDB:
                                             user=self._user,
                                             password=self._pwd,
                                             host=self._host,
+                                            port=self._port,
                                             charset='utf8',
                                             cursorclass=pymysql.cursors.SSCursor)
         self.__cursor = self.__connection.cursor()

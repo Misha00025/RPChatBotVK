@@ -2,13 +2,12 @@ import inspect
 import os
 import sys
 
-from app.modules.CharactersModule.CharacterAPI import CharacterAPI
 from app.modules.DiceModule.DicesAPI import DicesAPI
 from app.modules.BaseModule.BaseAPI import BaseAPI
 from app.modules.NotesModule.NotesAPI import NotesAPI
 
 
-def auto_load_modules_from(path, is_valid=lambda entity: True):
+def auto_load_modules_from(path, is_valid):
     """
     Import all modules from the given directory
     """
@@ -34,14 +33,14 @@ def auto_load_modules_from(path, is_valid=lambda entity: True):
 def load_modules(is_valid=lambda entity: True):
     modules = []
 
-    modules.append(BaseAPI())
+    # modules.append(BaseAPI())
     # modules.append(CharacterAPI())
     modules.append(DicesAPI())
     modules.append(NotesAPI())
 
     return modules
 
-def load_commands(modules, is_valid=lambda entity: True) -> [str]:
+def load_commands(modules, is_valid=lambda entity: True) -> list:
     commands = []
     for module in modules:
         if is_valid(module):
@@ -49,3 +48,4 @@ def load_commands(modules, is_valid=lambda entity: True) -> [str]:
         else:
             print(f"Модуль '{module}' не предоставляет список команд")
     return commands
+

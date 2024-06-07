@@ -17,9 +17,9 @@ class Arkadia:
     def __init__(self, token, version):
         self.token = token
         self.name = "Аркадия"
-        self._modules = load_modules(Arkadia.has_correct_api)
+        self._modules = load_modules(self.has_correct_api)
         self._commands = load_commands(self._modules, self.has_correct_api)
-        self.command_parcer = CommandParser(self._commands, "!")
+        self.command_parcer = CommandParser(self._commands, "/")
 
         self._init_vk_session()
         self._load_group_info()
