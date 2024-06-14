@@ -84,18 +84,18 @@ class DataBase:
         return MySQLDB
 
     def generate_tables(self):
-        query = "CREATE TABLE `vk_user` (" \
+        query = "CREATE TABLE IF NOT EXISTS `vk_user` (" \
                 "`vk_user_id` varchar(20) NOT NULL," \
                 "`first_name` varchar(30) DEFAULT NULL," \
                 "`last_name` varchar(30) DEFAULT NULL," \ 
                 "`photo_link` varchar(300) DEFAULT NULL," \
                 "PRIMARY KEY (`vk_user_id`));"
-        query += "CREATE TABLE `vk_group` (" \
+        query += "CREATE TABLE IF NOT EXISTS `vk_group` (" \
                 "`vk_group_id` varchar(20) NOT NULL,`" \
                 "group_name` varchar(50) DEFAULT NULL," \
                 "`privileges` json DEFAULT NULL," \
                 "PRIMARY KEY (`vk_group_id`));"
-        query += 'CREATE TABLE `user_group` (' \
+        query += 'CREATE TABLE IF NOT EXISTS `user_group` (' \
                 '`vk_user_id` varchar(20) NOT NULL,' \ 
                 '`vk_group_id` varchar(20) NOT NULL,' \
                 '`is_admin` tinyint(1) NOT NULL,' \
@@ -103,14 +103,14 @@ class DataBase:
                 'KEY `groupe_key` (`vk_group_id`),' \
                 'CONSTRAINT `groupe_key` FOREIGN KEY (`vk_group_id`) REFERENCES `vk_group` (`vk_group_id`) ON DELETE CASCADE ON UPDATE CASCADE,' \
                 'CONSTRAINT `vk_user_key` FOREIGN KEY (`vk_user_id`) REFERENCES `vk_user` (`vk_user_id`));'
-        query += "CREATE TABLE `vk_user_token` ("\
+        query += "CREATE TABLE IF NOT EXISTS `vk_user_token` ("\
                 "`vk_user_id` varchar(20) NOT NULL,"\
                 "`token` varchar(150) NOT NULL,"\
                 "`last_date` datetime NOT NULL,"\
                 "PRIMARY KEY (`token`),"\
                 "KEY `user_key` (`vk_user_id`),"\
                 "CONSTRAINT `user_key` FOREIGN KEY (`vk_user_id`) REFERENCES `vk_user` (`vk_user_id`) ON DELETE CASCADE ON UPDATE CASCADE);"
-        query += "CREATE TABLE `note` ("\
+        query += "CREATE TABLE IF NOT EXISTS `note` ("\
                 "`group_id` varchar(20) NOT NULL,"\
                 "`owner_id` varchar(20) NOT NULL,"\
                 "`note_id` int NOT NULL AUTO_INCREMENT,"\
