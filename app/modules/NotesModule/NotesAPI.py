@@ -1,4 +1,4 @@
-from app.UserFromDB import UserFromDB
+from app.DataBase.UserFromDB import UserFromDB
 from app.modules.BaseModule.BaseAPI import BaseAPI
 from app import database
 

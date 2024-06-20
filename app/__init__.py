@@ -1,5 +1,5 @@
 from config import token, version
-from app.core import Logger
+from app import Logger
 from app.DataBase import DataBase
 
 

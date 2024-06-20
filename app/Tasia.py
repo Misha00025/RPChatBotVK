@@ -1,9 +1,9 @@
 from app.Arkadia import Arkadia
-from app.CommandParser import CommandParser
-from app.Loaders import load_modules, load_commands
+from app.core.CommandParser import CommandParser
+from app.core.Loaders import load_modules, load_commands
 
 from app import logger
-from app.UserFromDB import UserFromDB
+from app.DataBase.UserFromDB import UserFromDB
 
 
 class Tasia (Arkadia):

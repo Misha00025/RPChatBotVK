@@ -1,6 +1,5 @@
 #!./venv/bin/python
 from app.modules.BaseModule.BaseAPI import BaseAPI
-from app.modules.NotesModule.NotesAPI import NotesAPI
 
 
 def dialog():
@@ -11,7 +10,7 @@ def dialog():
 
 
 def auto(api: BaseAPI, commands: list):
-    from app.UserFromDB import UserFromDB
+    from app.DataBase.UserFromDB import UserFromDB
     user = UserFromDB('173745999')
     class Ev:
         group_id = "-101"

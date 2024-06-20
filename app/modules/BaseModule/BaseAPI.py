@@ -1,6 +1,6 @@
-from app.UserFromDB import UserFromDB
+from app.DataBase.UserFromDB import UserFromDB
 
-from app.CommandParser import CommandParser
+from app.core.CommandParser import CommandParser
 
 
 class BaseAPI:

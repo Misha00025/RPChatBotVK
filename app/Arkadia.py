@@ -6,9 +6,9 @@ from vk_api.utils import get_random_id
 from vk_api.vk_api import VkApi, VkApiMethod
 
 import app
-from app.CommandParser import CommandParser
-from app.Loaders import load_modules, load_commands
-from app.UserFromDB import UserFromDB
+from app.core.CommandParser import CommandParser
+from app.core.Loaders import load_modules, load_commands
+from app.DataBase.UserFromDB import UserFromDB
 
 
 class Arkadia:

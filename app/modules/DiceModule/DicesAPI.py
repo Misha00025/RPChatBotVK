@@ -1,8 +1,6 @@
-from vk_api.longpoll import Event
-
 from .DiceController import DiceController, redecorate
 from app.modules.BaseModule.BaseAPI import BaseAPI
-from app.CommandParser import CommandParser
+from app.core.CommandParser import CommandParser
 
 
 _math_simbols = ["+", "-", "/", "*", "(", ")"]
