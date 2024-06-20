@@ -1,5 +1,3 @@
-from vk_api.longpoll import Event
-
 from app import database
 
 class UserFromDB:

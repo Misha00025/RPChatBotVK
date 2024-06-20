@@ -1,9 +1,9 @@
 from config import token, version
-from app.Logger import Logger
+from app.core import Logger
 from app.DataBase import DataBase
 
 
-logger = Logger()
+logger = Logger
 database = DataBase(logger)
 
 

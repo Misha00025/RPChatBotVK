@@ -3,10 +3,11 @@ from .data_bases.MySQLDB import MySQLDB
 
 
 class DataBase:
-    from app.Logger import Logger
+    from app.core import Logger
 
     def __init__(self, logger: Logger = None):
         from config import connection_settings
+        self._subdb:DataBase = self
         if connection_settings is not None:
             self.type = connection_settings["Type"]
             dbname = connection_settings["DataBaseName"]
@@ -14,10 +15,9 @@ class DataBase:
             password = connection_settings["Password"]
             host = connection_settings["Host"]
             port = connection_settings["Port"]
-            self._subdb = self
             self.logger = logger
             if self.logger is None:
-                from app.Logger import Logger
+                from app.core.Logger import Logger
                 self.logger = Logger()
             self._connect(dbname, user, password, host, port)
 
