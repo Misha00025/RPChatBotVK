@@ -4,12 +4,10 @@ from app.DataBase.DataBase import DataBase
 
 
 logger = Logger
-database: DataBase = None
+database: DataBase = DataBase(logger)
 
 
 def start(listener = None, cmd_prefix = None):
-    global database
-    database = DataBase(logger)
     if cmd_prefix is None:
         cmd_prefix = "/"
     if listener is None:

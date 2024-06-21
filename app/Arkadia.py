@@ -16,7 +16,7 @@ class Arkadia:
         self.command_parcer = CommandParser(self._commands, cmd_prefix)
 
         self.log = app.logger
-        # self.log.write_errors_in_file()
+        self.log.write_errors_in_file()
         self.log.write_datetime_in_console()
         self.log.write_and_print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
 
@@ -30,7 +30,7 @@ class Arkadia:
                 break
             except Exception as err:
                 self.log.only_print("Произошла непредвиденная ошибка! Проверьте логи!")
-                self.log.only_write(err)
+                self.log.only_write(f"{err.with_traceback(err.__traceback__)}")
             finally:
                 self.log.save_logs()
 

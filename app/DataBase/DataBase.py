@@ -20,6 +20,7 @@ class DataBase:
                 from app.Logger import Logger
                 self.logger = Logger()
             self._connect(dbname, user, password, host, port)
+            self.generate_tables()
 
     def is_connected(self):
         return self._subdb.is_connected()
@@ -83,46 +84,15 @@ class DataBase:
             return connector
         return MySQLDB
 
+    def _read_file_to_string(self, file_path):
+        try:
+            with open(file_path, 'r') as file:
+                file_content = file.read()
+                return file_content
+        except FileNotFoundError:
+            return "Файл не найден"
+
     def generate_tables(self):
-        query = "CREATE TABLE IF NOT EXISTS `vk_user` ("
-        query +="`vk_user_id` varchar(20) NOT NULL,"
-        query +="`first_name` varchar(30) DEFAULT NULL,"
-        query +="`last_name` varchar(30) DEFAULT NULL,"
-        query +="`photo_link` varchar(300) DEFAULT NULL,"
-        query +="PRIMARY KEY (`vk_user_id`));"
-        query += "CREATE TABLE IF NOT EXISTS `vk_group` ("
-        query +="`vk_group_id` varchar(20) NOT NULL,`"
-        query +="group_name` varchar(50) DEFAULT NULL,"
-        query +="`privileges` json DEFAULT NULL,"
-        query +="PRIMARY KEY (`vk_group_id`));"
-        query += 'CREATE TABLE IF NOT EXISTS `user_group` ('
-        query +='`vk_user_id` varchar(20) NOT NULL,'
-        query +='`vk_group_id` varchar(20) NOT NULL,'
-        query +='`is_admin` tinyint(1) NOT NULL,'
-        query +='UNIQUE KEY `vk_user_id` (`vk_user_id`,`vk_group_id`) USING BTREE,'
-        query +='KEY `groupe_key` (`vk_group_id`),'
-        query +='CONSTRAINT `groupe_key` FOREIGN KEY (`vk_group_id`) REFERENCES `vk_group` (`vk_group_id`) ON DELETE CASCADE ON UPDATE CASCADE,'
-        query +='CONSTRAINT `vk_user_key` FOREIGN KEY (`vk_user_id`) REFERENCES `vk_user` (`vk_user_id`));'
-        query += "CREATE TABLE IF NOT EXISTS `vk_user_token` ("
-        query +="`vk_user_id` varchar(20) NOT NULL,"
-        query +="`token` varchar(150) NOT NULL,"
-        query +="`last_date` datetime NOT NULL,"
-        query +="PRIMARY KEY (`token`),"
-        query +="KEY `user_key` (`vk_user_id`),"
-        query +="CONSTRAINT `user_key` FOREIGN KEY (`vk_user_id`) REFERENCES `vk_user` (`vk_user_id`) ON DELETE CASCADE ON UPDATE CASCADE);"
-        query += "CREATE TABLE IF NOT EXISTS `note` ("
-        query +="`group_id` varchar(20) NOT NULL,"
-        query +="`owner_id` varchar(20) NOT NULL,"
-        query +="`note_id` int NOT NULL AUTO_INCREMENT,"
-        query +="`header` varchar(100) NOT NULL,"
-        query +="`description` text NOT NULL,"
-        query +="`addition_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
-        query +="`modified_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,"
-        query +="PRIMARY KEY (`note_id`,`group_id`,`owner_id`) USING BTREE,"
-        query +="UNIQUE KEY `note_id` (`note_id`),"
-        query +="KEY `grope_id` (`group_id`),"
-        query +="KEY `owner_id` (`owner_id`),"
-        query +="CONSTRAINT `note_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `vk_group` (`vk_group_id`) ON DELETE CASCADE ON UPDATE CASCADE,"
-        query +="CONSTRAINT `note_ibfk_2` FOREIGN KEY (`owner_id`) REFERENCES `vk_user` (`vk_user_id`) ON DELETE CASCADE ON UPDATE CASCADE);"
+        query = self._read_file_to_string("create_tables.sql")
         self.execute(query)
 
