@@ -6,7 +6,7 @@ class UserFromDB:
     def __init__(self, user_id, group_id = None):
         self.group_id = group_id
         self.database = database
-        if database.is_connected():
+        if database is not None and database.is_connected():
             self.user = self._get_from_db(user_id)
             if self.user is None:
                 self.user = self._create_user(user_id)
