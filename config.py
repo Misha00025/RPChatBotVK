@@ -1,14 +1,15 @@
 import configparser
 
+_conf_path = "configs/"
 
 _conf = configparser.ConfigParser()
-_conf.read("config.ini")
+_conf.read(_conf_path + "config.ini")
 
 
 version = _conf["DEFAULT"]["Version"]
 log_file_name = _conf["DEFAULT"]["LogFIle"]
-token_file_name = _conf["DEFAULT"]["TokenFIle"]
-db_connection_file_name = _conf["DEFAULT"]["DbConnectionSettingsFile"]
+token_file_name = _conf_path + _conf["VK"]["TokenFIle"]
+db_connection_file_name = _conf_path + _conf["DATABASE"]["DbConnectionSettingsFile"]
 
 try:
     _db_config = configparser.ConfigParser()

@@ -1,5 +1,6 @@
 from app import database
 
+
 class UserFromDB:
 
     def __init__(self, user_id, group_id = None):

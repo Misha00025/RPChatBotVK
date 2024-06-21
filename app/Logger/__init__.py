@@ -21,12 +21,12 @@ _datetime_in_console = False
 open(_log_file_name, "w+")
 
 
-def write_errors_in_file(self):
-    sys.stderr = open(self._log_file_name, "a")
+def write_errors_in_file():
+    sys.stderr = open(_log_file_name, "a")
 
 
-def only_write(self, msg):
-    with open(self._log_file_name, "a") as log_file:
+def only_write(msg):
+    with open(_log_file_name, "a") as log_file:
         try:
             msg = str(msg)
             msg = msg.replace('\U0001f4a5', 'BOOM!')
@@ -36,24 +36,24 @@ def only_write(self, msg):
             log_file.write(f"[{_get_datetime()}] {err}\n")
 
 
-def write_and_print(self, msg):
-    self.only_print(msg)
-    self.only_write(msg)
+def write_and_print(msg):
+    only_print(msg)
+    only_write(msg)
 
 
-def only_print(self, msg):
+def only_print(msg):
     dt = ""
-    if self._datetime_in_console:
+    if _datetime_in_console:
         dt = f"[{_get_datetime()}] "
-    self._console.write(f"{dt}{msg}\n")
+    _console.write(f"{dt}{msg}\n")
 
 
-def write_datetime_in_console(self):
-    self._datetime_in_console = True
+def write_datetime_in_console():
+    _datetime_in_console = True
 
 
-def save_logs(self):
+def save_logs():
     if not os.path.exists("logs"):
         os.mkdir("logs")
-    file_path = os.path.join("logs", f"{_get_datetime_to_filename()}_{self._log_file_name}")
-    shutil.copyfile(self._log_file_name, file_path)
+    file_path = os.path.join("logs", f"{_get_datetime_to_filename()}_{_log_file_name}")
+    shutil.copyfile(_log_file_name, file_path)

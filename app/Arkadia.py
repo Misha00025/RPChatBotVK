@@ -1,110 +1,54 @@
-from time import sleep
-
-from requests.exceptions import ReadTimeout, ConnectionError
-from vk_api.longpoll import VkLongPoll, VkEventType
-from vk_api.utils import get_random_id
-from vk_api.vk_api import VkApi, VkApiMethod
+from vk_api.longpoll import Event, VkEventType
 
 import app
 from app.core.CommandParser import CommandParser
 from app.core.Loaders import load_modules, load_commands
 from app.DataBase.UserFromDB import UserFromDB
-
+from app.core.base_interface.Response import Response
 
 class Arkadia:
 
-    def __init__(self, token, version, cmd_prefix):
-        self.token = token
+    def __init__(self, version, cmd_prefix):
         self.name = "Аркадия"
         self._modules = load_modules(self.has_correct_api)
         self._commands = load_commands(self._modules, self.has_correct_api)
         self.command_parcer = CommandParser(self._commands, cmd_prefix)
-
-        self._init_vk_session()
-        self._load_group_info()
 
         self.log = app.logger
         self.log.write_errors_in_file()
         self.log.write_datetime_in_console()
         self.log.write_and_print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
 
-    def _init_vk_session(self):
-        self.vk_session = VkApi(token=self.token)
-        self.vk: VkApiMethod = self.vk_session.get_api()
-
-    def _load_group_info(self):
-        import requests
-        data = f"v={self.vk_session.api_version}&access_token={self.token}&lang=0"
-        res = requests.post('https://api.vk.com/method/groups.getById', data=data)
-        json = res.json()["response"][0]
-        # print(json)
-        self.group_id = json["id"]
-        self.group_name = json["name"]
-        self._save_group()
-
-    def _save_group(self):
-        res = app.database.fetchone(f"SELECT * FROM vk_group WHERE vk_group_id = '{self.group_id}'")
-        if res is None:
-            app.database.execute(f"INSERT INTO vk_group(vk_group_id, group_name) "
-                                 f"VALUES ('{self.group_id}', '{self.group_name}')")
-        else:
-            app.database.execute(f"UPDATE vk_group SET group_name='{self.group_name}' "
-                                 f"WHERE vk_group_id='{self.group_id}'")
-
     def start(self):
-        error = "First connect"
         while True:
             try:
-                self._connect(error)
-                self.log.only_print(f'Бот "{self.name}" успешно подключился к серверам ВК')
                 self.events_listen()
-            except ReadTimeout as err:
-                self._reconnect(err)
-            except ConnectionError as err:
-                self._reconnect(err)
-            except KeyboardInterrupt:
-                self.log.write_and_print("Выполнено отключение бота извне!")
-                self.log.save_logs()
-                break
             except Exception as err:
                 self.log.only_print("Произошла непредвиденная ошибка! Проверьте логи!")
+                self.log.only_write(err)
                 self.log.save_logs()
-                error = err
-
-    def _reconnect(self, err):
-        sleep(60)
-        self.log.only_print("Попытка переподключения")
-        error = err
-
-    def _connect(self, err):
-        self.log.only_write(err)
-        self.log.save_logs()
-        self._init_vk_session()
-
-    def _is_valid_event(self, event):
-        is_new_message = event.type == VkEventType.MESSAGE_NEW
-        result = is_new_message
-        return result
+            finally:
+                self.log.save_logs()
+                break
 
     def events_listen(self):
-        longpoll = VkLongPoll(self.vk_session)
-        for event in longpoll.listen():
-            if self._is_valid_event(event):
-                request = event.text
-                command_lines: list = self.command_parcer.find_command_lines(request)
-                user = UserFromDB(event.user_id, self.group_id)
-                message = self.assembly_message(user, command_lines, request)
+        from app.core.vk_used.vk_listener import VkListener
+        from app.core.vk_used.vk_sender import VkSender
+        listener = VkListener()
+        sender = VkSender()
+        listener.add_action_to_event(lambda event: sender.send_response(self.make_response(event)), VkEventType.MESSAGE_NEW)
+        listener.add_action_to_event(lambda event: sender.send_response(self.make_response(event)), VkEventType.MESSAGE_EDIT)
+        listener.start_listen()
 
-                if event.from_chat:
-                    self.write_msg_to_chat(event.chat_id, message)
-                    self.log.write_and_print(f'Message in chat_{event.chat_id} from user_{event.user_id}: {request}')
-                else:
-                    self.write_msg(event.user_id, message)
-                    self.log.write_and_print(f'Message from user_{event.user_id}: {request}')
-
-    def parce_event(self, event):
-        pass
-
+    def make_response(self, event: Event):
+        request = event.text
+        command_lines: list = self.command_parcer.find_command_lines(request)
+        user = UserFromDB(event.user_id, event.group_id)
+        message = self.assembly_message(user, command_lines, request)
+        response = Response(message, [event.user_id])
+        if event.from_chat:
+            response.set_chat_id(event.chat_id)
+        return response
 
     def assembly_message(self, user: UserFromDB, command_lines: list, request):
         message = ""
@@ -115,24 +59,6 @@ class Arkadia:
                     continue
                 message += module_message + "\n\n"
         return message
-
-    def write_msg(self, user_id, message):
-        if message == "":
-            return
-        self.vk.messages.send(
-            user_id=user_id,
-            message=message,
-            random_id=get_random_id()
-        )
-
-    def write_msg_to_chat(self, chat_id, message):
-        if message == "":
-            return
-        self.vk.messages.send(
-            chat_id=chat_id,
-            message=message,
-            random_id=get_random_id()
-        )
 
     @staticmethod
     def has_correct_api(module) -> bool:

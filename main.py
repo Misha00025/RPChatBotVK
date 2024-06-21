@@ -1,5 +1,5 @@
 #!./venv/bin/python
-from app.Arkadia import Arkadia
+import app
 
 if __name__ == "__main__":
     app.start()

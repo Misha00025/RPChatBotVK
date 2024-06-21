@@ -1,17 +1,19 @@
-from config import token, version
+from config import version
 from app import Logger
-from app.DataBase import DataBase
+from app.DataBase.DataBase import DataBase
 
 
 logger = Logger
-database = DataBase(logger)
+database: DataBase = None
 
 
 def start(listener = None, cmd_prefix = None):
+    global database
+    database = DataBase(logger)
     if cmd_prefix is None:
         cmd_prefix = "/"
     if listener is None:
         from app.Arkadia import Arkadia
-        listener = Arkadia(token, version, cmd_prefix)
+        listener = Arkadia(version, cmd_prefix)
     listener.start()
 
