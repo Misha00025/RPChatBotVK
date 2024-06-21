@@ -26,6 +26,7 @@ class Arkadia:
                 self.events_listen()
             except KeyboardInterrupt:
                 self.log.write_and_print("Выполнено принудительное отключение бота")
+                self.log.save_logs()
                 break
             except Exception as err:
                 self.log.only_print("Произошла непредвиденная ошибка! Проверьте логи!")
