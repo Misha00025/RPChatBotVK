@@ -25,12 +25,12 @@ class Tasia (Arkadia):
 
     def start(self):
             try:
-                self.events_listen()
+                self._events_listen()
             except KeyboardInterrupt:
                 self.logger.write_and_print("Выполнено отключение бота извне!")
                 # self.logger.save_logs()
 
-    def events_listen(self):
+    def _events_listen(self):
         while True:
             message = input("Введите команду: ")
             if message == "quit":

@@ -16,14 +16,14 @@ class Arkadia:
         self.command_parcer = CommandParser(self._commands, cmd_prefix)
 
         self.log = app.logger
-        self.log.write_errors_in_file()
+        # self.log.write_errors_in_file()
         self.log.write_datetime_in_console()
         self.log.write_and_print(f'Инициализация модуля "{self.name}" версии {version} завершена!')
 
     def start(self):
         while True:
             try:
-                self.events_listen()
+                self._events_listen()
             except KeyboardInterrupt:
                 self.log.write_and_print("Выполнено принудительное отключение бота")
                 self.log.save_logs()
@@ -34,14 +34,39 @@ class Arkadia:
             finally:
                 self.log.save_logs()
 
-    def events_listen(self):
+    def _events_listen(self):
         from app.core.vk_used.vk_listener import VkListener
         from app.core.vk_used.vk_sender import VkSender
         listener = VkListener()
-        sender = VkSender()
-        listener.add_action_to_event(lambda event: sender.send_response(self.make_response(event)), VkEventType.MESSAGE_NEW)
-        listener.add_action_to_event(lambda event: sender.send_response(self.make_response(event)), VkEventType.MESSAGE_EDIT)
+        self.sender = VkSender()
+        listener.add_action_to_event(lambda event: self.send_response(event), VkEventType.MESSAGE_NEW)
+        listener.add_action_to_event(lambda event: self.send_response(event), VkEventType.MESSAGE_EDIT)
+        listener.add_action_to_event(lambda event: self._redirect_message(event), VkEventType.MESSAGE_NEW)
         listener.start_listen()
+
+    def _redirect_message(self, event: Event):
+        if self.is_silence(event):
+            return
+        from app.core import locations
+        self.log.only_print("Запущена переадресация")
+        message_owner = str(event.user_id)
+        self.log.only_print(f"Отправитель: {message_owner}")
+        users: list = locations.get_users(locations.get_user_location(message_owner))
+        self.log.only_print(f"Users: {users}")
+        if users is None:
+            return
+        users.remove(message_owner)
+        sender_name = message_owner
+        if event.from_me:
+            sender_name = "ГМ"
+        message = f"--redirect--\nОт: {sender_name}:\n{event.text}"
+        response = Response(message, users)
+        self.sender.send_response(response)
+
+    def send_response(self, event):
+        if self.is_silence(event):
+            return
+        self.sender.send_response(self.make_response(event))
 
     def make_response(self, event: Event):
         request = event.text
@@ -62,6 +87,12 @@ class Arkadia:
                     continue
                 message += module_message + "\n\n"
         return message
+
+    @staticmethod
+    def is_silence(event):
+        cp = CommandParser(commands=[""], prefix="--redirect--")
+        cplen = len(cp.find_command_lines(event.message))
+        return cplen != 0
 
     @staticmethod
     def has_correct_api(module) -> bool:
