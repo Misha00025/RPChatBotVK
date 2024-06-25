@@ -1,5 +1,6 @@
 from ..BaseModule.BaseAPI import BaseAPI
 from ...DataBase.UserFromDB import UserFromDB
+from app.core import alias_managent as am
 
 
 class LocationsAPI(BaseAPI):
@@ -18,4 +19,5 @@ class LocationsAPI(BaseAPI):
                 break
         zone = self.cp.find_parameters_in_line(cl)
         locations.add_user(zone, user_id)
+        user_id = am.get_alias(user_id)
         return f"Пользователь {user_id} добавлен в зону {zone}"
