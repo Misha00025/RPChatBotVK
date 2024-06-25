@@ -8,6 +8,7 @@ _conf.read(_conf_path + "config.ini")
 
 version = _conf["DEFAULT"]["Version"]
 log_file_name = _conf["DEFAULT"]["LogFIle"]
+silence_prefix = _conf["DEFAULT"]["SilencePrefix"]
 token_file_name = _conf_path + _conf["VK"]["TokenFIle"]
 db_connection_file_name = _conf_path + _conf["DATABASE"]["DbConnectionSettingsFile"]
 

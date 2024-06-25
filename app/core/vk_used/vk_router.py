@@ -1,13 +1,15 @@
 from .vk_sender import VkSender
 from vk_api.longpoll import Event
 
+from config import silence_prefix
+
 from app.core.base_interface.Response import Response
 from app.core.CommandParser import CommandParser
 from app.core.MessageAssembler import get_assembler
 from app.core import alias_managent as am
 
 
-_silence = "--silence--"
+_silence = silence_prefix
 _redirect = "--redirect--"
 
 
@@ -28,6 +30,8 @@ class VkRouter:
     def send_response(self, event):
         response: Response = self.make_response(event)
         message = response.message
+        if message == "":
+            return
         if self.is_silence(event):
             message = f"{_silence}\n{message}"
         response.message = message
