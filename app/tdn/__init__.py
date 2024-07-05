@@ -6,7 +6,7 @@ class TdnSession:
         import requests
         self._rq = requests
         self._api_version = "v1"
-        self._url = f"http://127.0.0.1:5000/api/{self._api_version}/"
+        self._url = f"https://the-dungeon-notebook/api/{self._api_version}/"
         self._headers = {"Service-token": service_token, "Content-Type": "application/json"}
 
     def _get_param(self, command, args):
