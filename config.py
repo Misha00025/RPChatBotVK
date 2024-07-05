@@ -22,4 +22,4 @@ except:
     connection_settings = None
 
 token = open(token_file_name, "r", encoding="utf-8").read()
-service_token = open(st_file_name, "r", encoding="utf-8").read()
+service_token = str(open(st_file_name, "r", encoding="utf-8").readline()).strip()
