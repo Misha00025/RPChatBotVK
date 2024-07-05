@@ -1,6 +1,6 @@
 from app.core import alias_managent as am
 from ..BaseModule.BaseAPI import BaseAPI
-from ...DataBase.UserFromDB import UserFromDB
+from ...DataBase.User import User
 
 
 class AliasAPI(BaseAPI):
@@ -8,7 +8,7 @@ class AliasAPI(BaseAPI):
         self._commands = ["псевдоним"]
         super().__init__(self._commands)
 
-    def assembly_message(self, user: UserFromDB, command_lines: [str], request: str) -> str:
+    def assembly_message(self, user: User, command_lines: [str], request: str) -> str:
         user_id = user.get_user_id()
         last_alias = am.get_alias(user_id)
         cl = ""

@@ -3,7 +3,7 @@ import os
 import sys
 
 from app.modules.DiceModule.DicesAPI import DicesAPI
-from app.modules.BaseModule.BaseAPI import BaseAPI
+from app.modules.BaseModule.DefaultAPI import DefaultAPI
 from app.modules.NotesModule.NotesAPI import NotesAPI
 from app.modules.LocationsModule.LocationsAPI import LocationsAPI
 from app.modules.AliasModule.AliasAPI import AliasAPI
@@ -37,6 +37,7 @@ def load_modules(is_valid=lambda entity: True):
 
     # modules.append(BaseAPI())
     # modules.append(CharacterAPI())
+    modules.append(DefaultAPI())
     modules.append(DicesAPI())
     modules.append(NotesAPI())
     modules.append(LocationsAPI())

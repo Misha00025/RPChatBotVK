@@ -2,16 +2,9 @@
 from app.modules.BaseModule.BaseAPI import BaseAPI
 
 
-def dialog():
-    from app.Tasia import Tasia
-    from config import version
-    application = Tasia(version=version)
-    application.start()
-
-
 def auto(api: BaseAPI, commands: list):
-    from app.DataBase.UserFromDB import UserFromDB
-    user = UserFromDB('173745999')
+    from app.DataBase.User import User
+    user = User('173745999', "-101")
     class Ev:
         group_id = "-101"
     user.from_event = Ev()

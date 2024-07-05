@@ -1,6 +1,6 @@
 from app.core.CommandParser import CommandParser
 from app.core.Loaders import load_modules, load_commands
-from app.DataBase.UserFromDB import UserFromDB
+from app.DataBase.User import User
 from vk_api.longpoll import Event
 
 
@@ -10,14 +10,14 @@ class MessageAssembler:
         self._commands = load_commands(self._modules, self.has_correct_api)
         self.command_parser = CommandParser(self._commands, cmd_prefix)
 
-    def assembly_message(self, event: Event):
+    def assembly_message(self, event: Event, group_id, user_is_admin=False):
         request = event.text
         command_lines: list = self.command_parser.find_command_lines(request)
-        user = UserFromDB(event.user_id)
+        user = User(event.user_id, group_id, user_is_admin)
         message = self._assembly_message(user, command_lines, request)
         return message
 
-    def _assembly_message(self, user: UserFromDB, command_lines: list, request):
+    def _assembly_message(self, user: User, command_lines: list, request):
         message = ""
         for module in self._modules:
             if self.has_correct_api(module) and module.has_commands(command_lines):

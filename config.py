@@ -9,7 +9,8 @@ _conf.read(_conf_path + "config.ini")
 version = _conf["DEFAULT"]["Version"]
 log_file_name = _conf["DEFAULT"]["LogFIle"]
 silence_prefix = _conf["DEFAULT"]["SilencePrefix"]
-token_file_name = _conf_path + _conf["VK"]["TokenFIle"]
+st_file_name = _conf_path+_conf["DEFAULT"]["ServiceTokenFile"]
+token_file_name = _conf_path + _conf["VK"]["TokenFile"]
 db_connection_file_name = _conf_path + _conf["DATABASE"]["DbConnectionSettingsFile"]
 
 try:
@@ -20,5 +21,5 @@ except:
     print(f"File \"{db_connection_file_name}\" do not exist!")
     connection_settings = None
 
-# create a file "token.txt" and insert your vk token into it
 token = open(token_file_name, "r", encoding="utf-8").read()
+service_token = open(st_file_name, "r", encoding="utf-8").read()

@@ -1,9 +1,9 @@
-from app.DataBase.UserFromDB import UserFromDB
+from app.DataBase.User import User
 from app.modules.BaseModule.BaseAPI import BaseAPI
 from app import database
 
 
-def _add_note(user: UserFromDB, params: (str, str)) -> str:
+def _add_note(user: User, params: (str, str)) -> str:
     header, body = params
     if user.group_id is not None:
         group_id = user.group_id
@@ -16,11 +16,11 @@ def _add_note(user: UserFromDB, params: (str, str)) -> str:
            "(Если он спросит, назовите код ошибки: 2.1)"
 
 
-def _get_notes(user: UserFromDB, page: str = "") -> str:
+def _get_notes(user: User, page: str = "") -> str:
     return ""
 
 
-def _del_note(user: UserFromDB, note_id: str) -> str:
+def _del_note(user: User, note_id: str) -> str:
     return ""
 
 

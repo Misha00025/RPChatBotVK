@@ -1,4 +1,4 @@
-from app.DataBase.UserFromDB import UserFromDB
+from app.DataBase.User import User
 
 from app.core.CommandParser import CommandParser
 
@@ -12,7 +12,7 @@ class BaseAPI:
         self.commands = commands
         self.cp = CommandParser(commands=self.commands)
 
-    def assembly_message(self, user: UserFromDB, command_lines: [str], request: str) -> str:
+    def assembly_message(self, user: User, command_lines: [str], request: str) -> str:
         pass
 
     def has_commands(self, command_lines) -> bool:

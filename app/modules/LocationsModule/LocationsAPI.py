@@ -1,5 +1,5 @@
 from ..BaseModule.BaseAPI import BaseAPI
-from ...DataBase.UserFromDB import UserFromDB
+from ...DataBase.User import User
 from app.core import alias_managent as am
 from app.core import locations
 
@@ -8,7 +8,7 @@ class LocationsAPI(BaseAPI):
         self._commands = ["локация", "зона", "location"]
         super().__init__(self._commands)
 
-    def assembly_message(self, user: UserFromDB, command_lines: [str], request: str) -> str:
+    def assembly_message(self, user: User, command_lines: [str], request: str) -> str:
         user_id = user.get_user_id()
         cl = ""
         for line in command_lines:
