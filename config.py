@@ -6,7 +6,7 @@ _conf = configparser.ConfigParser()
 _conf.read(_conf_path + "config.ini")
 
 
-version = _conf["DEFAULT"]["Version"]
+version = open("version", "r", encoding="utf-8").read()
 log_file_name = _conf["DEFAULT"]["LogFIle"]
 silence_prefix = _conf["DEFAULT"]["SilencePrefix"]
 st_file_name = _conf_path+_conf["DEFAULT"]["ServiceTokenFile"]
