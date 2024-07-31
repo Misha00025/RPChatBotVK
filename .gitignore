@@ -134,3 +134,4 @@ log.txt
 /logs
 test.py
 configs/*
+saves/
