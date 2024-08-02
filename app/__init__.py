@@ -1,10 +1,8 @@
 from config import version
 from app import Logger
-from app.DataBase.DataBase import DataBase
 
 
 logger = Logger
-database: DataBase = DataBase(logger)
 global_cmd_prefix = "!!!"
 
 

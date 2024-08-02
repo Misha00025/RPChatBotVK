@@ -1,6 +1,6 @@
 from app.core import alias_managent as am
 from ..BaseModule.BaseAPI import BaseAPI
-from ...DataBase.User import User
+from app.core.User import User
 
 
 class AliasAPI(BaseAPI):

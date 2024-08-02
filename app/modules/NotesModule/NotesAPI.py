@@ -1,16 +1,14 @@
-from app.DataBase.User import User
+from app.core.User import User
 from app.modules.BaseModule.BaseAPI import BaseAPI
-from app import database
+from app.tdn.api.notes import get_notes_api
 
 
 def _add_note(user: User, params: (str, str)) -> str:
+    api = get_notes_api()
     header, body = params
     if user.group_id is not None:
-        group_id = user.group_id
         user_id = user.get_user_id()
-        query = f"INSERT INTO note(group_id, owner_id, header, description) VALUES " \
-                f"('{group_id}', '{user_id}', '{header}', '{body}')"
-        database.execute(query)
+        api.add_note(user_id, header, body)
         return "Запись успешно добавлена!"
     return "Не получилось добавить запись, обратитесь к админу :(\n" \
            "(Если он спросит, назовите код ошибки: 2.1)"

@@ -1,4 +1,4 @@
-from app.DataBase.User import User
+from app.core.User import User
 
 from app.core.CommandParser import CommandParser
 

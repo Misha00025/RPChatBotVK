@@ -7,7 +7,7 @@ class TdnSession:
         self._rq = requests
         self._api_version = "v1"
         self._url = f"https://the-dungeon-notebook.ru/api/{self._api_version}/"
-        self._headers = {"Service-token": service_token, "Content-Type": "application/json"}
+        self._headers = {"Service-token": service_token, "Content-Type": "application/json; charset=utf-8"}
 
     def _get_param(self, command, args):
         url = self._url + command
@@ -19,13 +19,17 @@ class TdnSession:
         url, args = self._get_param(command, args)
         return self._rq.get(url, params=args, headers=self._headers)
 
-    def post(self, command: str, data: dict):
-        url, args = self._get_param(command, None)
-        return self._rq.post(url, json=data, headers=self._headers)
+    def post(self, command: str, data: dict, args: dict = None):
+        url, args = self._get_param(command, args)
+        return self._rq.post(url, json=data, headers=self._headers, params=args)
 
     def put(self, command: str, data: dict, args: dict = None):
         url, args = self._get_param(command, args)
         return self._rq.put(url, params=args, json=data, headers=self._headers)
+
+    def delete(self, command: str, args: dict = None):
+        url, args = self._get_param(command, args)
+        return self._rq.delete(url, params=args, headers=self._headers)
 
 
 _session: TdnSession = None

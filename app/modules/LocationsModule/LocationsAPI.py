@@ -1,5 +1,5 @@
 from ..BaseModule.BaseAPI import BaseAPI
-from ...DataBase.User import User
+from app.core.User import User
 from app.core import alias_managent as am
 from app.core import locations
 

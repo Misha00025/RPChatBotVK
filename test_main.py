@@ -3,7 +3,7 @@ from app.modules.BaseModule.BaseAPI import BaseAPI
 
 
 def auto(api: BaseAPI, commands: list):
-    from app.DataBase.User import User
+    from app.core.User import User
     user = User('173745999', "-101")
     class Ev:
         group_id = "-101"
@@ -11,19 +11,6 @@ def auto(api: BaseAPI, commands: list):
     for command in commands:
         print(f"Command: {command}")
         print(f"Answer: {api.assembly_message(user, command, "\n".join(command))}")
-
-
-def db_test():
-    from app import database
-    user_id = 'test_user_2'
-    query = f"INSERT INTO vk_user(vk_user_id) VALUES ('{user_id}');"
-    print(f"Status: {database.execute(query)}")
-    # query = f"INSERT INTO vk_user(vk_user_id) VALUES ('{user_id}');"
-    # print(f"Status: {database.execute(query)}")
-    query = f"DELETE FROM vk_user WHERE vk_user_id = '{user_id}';"
-    print(f"Status: {database.execute(query)}")
-
-
 
 
 if __name__ == "__main__":

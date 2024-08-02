@@ -1,6 +1,5 @@
-from app.DataBase.User import User
+from app.core.User import User
 
-from app.core.CommandParser import CommandParser
 from .BaseAPI import BaseAPI
 
 
@@ -13,8 +12,8 @@ class DefaultAPI(BaseAPI):
     def assembly_message(self, user: User, command_lines: [str], request: str) -> str:
         for cm in command_lines:
             if self.cp.find_command_in_line(cm) == self.commands[0]:
-                from app.tdn.api import get_tdn_api
-                api = get_tdn_api()
+                from app.tdn.api.users import get_users_api
+                api = get_users_api()
                 print(api.add_user_to_me(user.get_user_id(), user.is_admin()))
                 message = "--service--\n"
                 message += "Здравствуйте.\nМеня зовут Аркадия.\nЯ -- бот-помощник для проведения текстовых ролевых игр."

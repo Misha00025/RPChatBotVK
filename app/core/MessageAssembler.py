@@ -1,6 +1,6 @@
 from app.core.CommandParser import CommandParser
 from app.core.Loaders import load_modules, load_commands
-from app.DataBase.User import User
+from app.core.User import User
 from vk_api.longpoll import Event
 
 
