@@ -10,6 +10,8 @@ class VkSender:
 
     def send_response(self, response: Response):
         addressees, message = response.addressee, response.message
+        import html
+        message = html.unescape(message)
         if response.is_chat_response:
             self._write_msg_to_chat(addressees[0], message)
         else:
