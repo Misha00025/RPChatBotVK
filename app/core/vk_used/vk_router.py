@@ -51,8 +51,12 @@ class VkRouter:
 
     def redirect_message(self, event: Event):
         from app.core import locations
+        # print("Start redirect")
         message_owner = str(event.user_id)
-        users: list = locations.get_users(locations.get_user_location(message_owner))
+        location = locations.get_user_location(message_owner)
+        # print(location)
+        users: list = locations.get_users(location)
+        # print(users)
         if users is None:
             return
         users.remove(message_owner)

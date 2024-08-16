@@ -11,6 +11,7 @@ _is_loaded = False
 def add_user(location_name, user_id):
     if location_name not in _locations.keys():
         _locations[location_name] = Location()
+    user_id = str(user_id)
     location = _locations[location_name]
     location.add_person(user_id)
     # add user cache
@@ -18,7 +19,8 @@ def add_user(location_name, user_id):
         remove_user(_user_location[user_id], user_id)
     _user_location[user_id] = location_name
     save_locations()
-    # print(_locations)
+    # for key in _locations.keys():
+    #     print(f"{key}:{_locations[key].get_persons()}")
     # print(_user_location)
 
 
