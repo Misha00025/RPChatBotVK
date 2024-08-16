@@ -15,12 +15,12 @@ def _get_instance():
 
 def get_alias(user_id):
     inst = _get_instance()
-    return inst.get_alias(user_id)
+    return inst.get_alias(str(user_id))
 
 
 def set_alias(user_id, alias):
     inst = _get_instance()
-    inst.set_alias(user_id, alias)
+    inst.set_alias(str(user_id), alias)
     save_alias()
 
 
