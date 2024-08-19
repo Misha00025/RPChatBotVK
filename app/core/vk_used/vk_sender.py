@@ -18,6 +18,21 @@ class VkSender:
             for addressee in addressees:
                 self._write_msg(addressee, message)
 
+    def edit_message(self, response: Response):
+        print("Edit messages in vk")
+        addressees, message = response.addressee, response.message
+        for addressee in addressees:
+            message_id, user_id = addressee
+            self._edit_message(user_id, message_id, message)
+
+    def _edit_message(self, peer_id, message_id, new_message):
+        self._api.messages.edit(
+            peer_id=peer_id,
+            message_id=message_id,
+            message=new_message,
+            dont_parse_links=1
+        )
+
     def _write_msg(self, user_id, message):
         if message == "":
             return
