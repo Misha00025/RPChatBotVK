@@ -19,8 +19,10 @@ class VkSender:
                 self._write_msg(addressee, message)
 
     def edit_message(self, response: Response):
-        print("Edit messages in vk")
+        # print("Edit messages in vk")
         addressees, message = response.addressee, response.message
+        import html
+        message = html.unescape(message)
         for addressee in addressees:
             message_id, user_id = addressee
             self._edit_message(user_id, message_id, message)
