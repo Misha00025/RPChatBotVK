@@ -10,6 +10,9 @@ class VkListener:
     def start_listen(self):
         longpoll = VkLongPoll(self._connector.get_session())
         for event in longpoll.listen():
+            if event.message is not None:
+                import html
+                event.message = html.unescape(event.message)
             if event.type in self.actions.keys():
                 for action in self.actions[event.type]:
                     action(event)

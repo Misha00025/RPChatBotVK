@@ -10,8 +10,6 @@ class VkSender:
 
     def send_response(self, response: Response):
         addressees, message = response.addressee, response.message
-        import html
-        message = html.unescape(message)
         if response.is_chat_response:
             self._write_msg_to_chat(addressees[0], message)
         else:
@@ -21,8 +19,6 @@ class VkSender:
     def edit_message(self, response: Response):
         # print("Edit messages in vk")
         addressees, message = response.addressee, response.message
-        import html
-        message = html.unescape(message)
         for addressee in addressees:
             message_id, user_id = addressee
             self._edit_message(user_id, message_id, message)
