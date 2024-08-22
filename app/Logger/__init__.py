@@ -16,17 +16,20 @@ def _get_datetime_to_filename():
 
 _start_time_str = _get_datetime()
 _console = sys.stdout
+_log_path = "logs"
+_log_backups = os.path.join(_log_path, "backups")
 _log_file_name = config.log_file_name
+_log_file = os.path.join(_log_path, _log_file_name)
 _datetime_in_console = False
-open(_log_file_name, "w+")
+open(_log_file, "w+")
 
 
 def write_errors_in_file():
-    sys.stderr = open(_log_file_name, "a")
+    sys.stderr = open(_log_file, "a")
 
 
 def only_write(msg):
-    with open(_log_file_name, "a") as log_file:
+    with open(_log_file, "a") as log_file:
         try:
             msg = str(msg)
             msg = msg.replace('\U0001f4a5', 'BOOM!')
@@ -53,7 +56,7 @@ def write_datetime_in_console():
 
 
 def save_logs():
-    if not os.path.exists("logs"):
-        os.mkdir("logs")
-    file_path = os.path.join("logs", f"{_get_datetime_to_filename()}_{_log_file_name}")
-    shutil.copyfile(_log_file_name, file_path)
+    if not os.path.exists(_log_backups):
+        os.mkdir(_log_backups)
+    file_path = os.path.join(_log_backups, f"{_get_datetime_to_filename()}_{_log_file_name}")
+    shutil.copyfile(_log_file, file_path)

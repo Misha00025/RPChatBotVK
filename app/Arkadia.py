@@ -1,6 +1,7 @@
 from vk_api.longpoll import Event, VkEventType
 
 import app
+from app.core.vk_used.vk_keyboard import VkKeyboard
 from app.core.vk_used.vk_router import VkRouter
 
 
@@ -32,8 +33,11 @@ class Arkadia:
         from app.core.vk_used.vk_sender import VkSender
         listener = VkListener()
         self.sender = VkSender()
+        self.keyboard = VkKeyboard()
         redirector = VkRouter(self.sender, self.log)
+
         listener.add_action_to_event(lambda event: redirector.route_message(event), VkEventType.MESSAGE_NEW)
         listener.add_action_to_event(lambda event: redirector.edit_routed_message(event), VkEventType.MESSAGE_EDIT)
+        listener.add_action_to_event(lambda event: self.keyboard.send(event), VkEventType.MESSAGE_NEW)
         listener.start_listen()
 
