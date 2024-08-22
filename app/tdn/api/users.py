@@ -31,7 +31,7 @@ class TdnUserApi(TdnApi):
         return res.ok
 
 
-_api: TdnUserApi
+_api: TdnUserApi = None
 
 
 def get_users_api() -> TdnUserApi:
