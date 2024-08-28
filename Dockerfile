@@ -8,7 +8,7 @@ RUN apt-get update
 RUN apt install -y wget && apt install -y zip 
 
 WORKDIR /root
-ENV BOT_VERSION=Arkadia-0-8-0-hotfix
+ENV BOT_VERSION=Arkadia-0-8-3
 RUN wget "https://github.com/Misha00025/RPChatBotVK/archive/$BOT_VERSION.zip" && unzip $BOT_VERSION.zip
 RUN mv /root/RPChatBotVK-$BOT_VERSION /root/RPChatBotVK
 
