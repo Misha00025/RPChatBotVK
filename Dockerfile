@@ -14,9 +14,7 @@ RUN ls && mv /root/RPChatBotVK-$BOT_VERSION /root/RPChatBotVK
 
 WORKDIR /root/RPChatBotVK
 RUN python3 -m venv venv
-RUN ./venv/bin/pip install -r req.txt;\
-    ./venv/bin/pip install psycopg2; \
-    ./venv/bin/pip install pymysql
+RUN ./venv/bin/pip install -r req.txt
 RUN chmod 777 main.py && mkdir ./configs && mkdir ./saves 
 
 CMD ./main.py
