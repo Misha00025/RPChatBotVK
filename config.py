@@ -18,7 +18,6 @@ _conf.read(_conf_path("config.ini"))
 
 
 log_file_name = _conf["DEFAULT"]["LogFIle"]
-st_file_name = _conf_path(_conf["DEFAULT"]["ServiceTokenFile"])
 keyboard_file = _conf_path(_conf["DEFAULT"]["KeyboardFile"])
 token_file_name = _conf_path(_conf["VK"]["TokenFile"])
 
@@ -30,7 +29,7 @@ if "Port" in _conf["API"].keys():
     api.port = int(_conf["API"]["Port"])
 else:
     api.port = None
-
+st_file_name = _conf_path(_conf["API"]["ServiceTokenFile"])
 
 version = open("version", "r", encoding="utf-8").read()
 silence_prefix = _conf["DEFAULT"]["SilencePrefix"]
