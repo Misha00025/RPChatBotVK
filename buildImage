@@ -1,0 +1,1 @@
+docker image build --no-cache -t ghcr.io/misha00025/rpchatbot:0.8.0 - < ./Dockerfile
