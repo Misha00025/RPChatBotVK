@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from .vk_sender import VkSender
 from vk_api.longpoll import Event
@@ -20,7 +20,7 @@ def _generate_message(event: Event):
 
 
 _redirected_messages = {}
-_last_clear = datetime.datetime
+_last_clear = datetime
 
 
 class VkRedirector:
@@ -42,6 +42,8 @@ class VkRedirector:
 
     def redirect_message(self, event: Event):
         from app.core import locations
+        if event.from_chat: 
+            return
         message_owner = str(event.user_id)
         location = locations.get_user_location(message_owner)
         users: list = locations.get_users(location)
