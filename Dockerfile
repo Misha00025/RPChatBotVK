@@ -5,12 +5,10 @@ MAINTAINER Misha00025<misha00025@mail.ru>
 ENV TZ=Europe/Moscow
 
 RUN apt-get update
-RUN apt install -y wget && apt install -y zip 
+RUN apt install -y wget && apt install -y zip && apt install -y git
 
 WORKDIR /root
-ENV BOT_VERSION=Arkadia-0-8-3-hotfix-2
-RUN wget "https://github.com/Misha00025/RPChatBotVK/archive/$BOT_VERSION.zip" && unzip $BOT_VERSION.zip
-RUN mv /root/RPChatBotVK-$BOT_VERSION /root/RPChatBotVK
+RUN git clone https://github.com/Misha00025/RPChatBotVK/ ./RPChatBotVK
 
 WORKDIR /root/RPChatBotVK
 RUN python3 -m venv venv
