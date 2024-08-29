@@ -15,8 +15,6 @@ fi
 
 if [ "$2" == "-u" ] || [ "$3" == "-u" ]; then
     docker image tag $IMAGE:$VERSION $IMAGE:unstable
-fi
-
-if [ "$2" == "-s" ] || [ "$3" == "-s" ]; then
+elif [ "$2" == "-s" ] || [ "$3" == "-s" ]; then
     docker image tag $IMAGE:$VERSION $IMAGE:stable
 fi
