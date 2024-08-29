@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [[ -z "$1" ]]; then
+    echo "Использование: $0 [OPTIONS]"
+    exit 1
+fi
+
+VERSION=$1
+IMAGE=ghcr.io/misha00025/rpchatbot
+
+# Проверяем, передан ли параметр -l
+if [[ "$2" == "-l" || "$3" == "-l" ]]; then
+    docker image tag $IMAGE:$VERSION $IMAGE:latest
+fi
+
+if [ "$2" == "-u" ] || [ "$3" == "-u" ]; then
+    docker image tag $IMAGE:$VERSION $IMAGE:unstable
+fi
+
+if [ "$2" == "-s" ] || [ "$3" == "-s" ]; then
+    docker image tag $IMAGE:$VERSION $IMAGE:stable
+fi

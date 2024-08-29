@@ -2,16 +2,12 @@
 
 # Проверяем, переданы ли параметры
 if [[ -z "$1" ]]; then
-    echo "Использование: $0 <версия> [-l]"
+    echo "Использование: $0 <версия>"
     exit 1
 fi
 
 VERSION=$1
+IMAGE=ghcr.io/misha00025/rpchatbot
 
 # Строим образ без кэша
-docker image build --no-cache -t ghcr.io/misha00025/rpchatbot:$VERSION - < ./Dockerfile
-
-# Проверяем, передан ли параметр -l
-if [[ "$2" == "-l" ]]; then
-    docker image tag ghcr.io/misha00025/rpchatbot:$VERSION ghcr.io/misha00025/rpchatbot:latest
-fi
+docker image build --no-cache -t $IMAGE:$VERSION - < ./Dockerfile
