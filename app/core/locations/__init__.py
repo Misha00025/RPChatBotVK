@@ -25,6 +25,7 @@ def add_user(location_name, user_id):
 
 
 def remove_user(location, user_id):
+    user_id = str(user_id)
     if location in _locations.keys():
         _locations[location].remove_person(user_id)
     if user_id in _user_location.keys():
@@ -33,6 +34,7 @@ def remove_user(location, user_id):
 
 
 def get_user_location(user_id):
+    user_id = str(user_id)
     if user_id not in _user_location.keys():
         return None
     return _user_location[user_id]

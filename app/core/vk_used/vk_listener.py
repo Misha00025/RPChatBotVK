@@ -2,6 +2,7 @@ from .vk_connector import get_connector
 from vk_api.longpoll import VkLongPoll
 
 
+# TODO: изменить способ обработки событий. Сделать так, чтобы события проверялись на выполнение определённых условий, а не только на определнный event.
 class VkListener:
     def __init__(self):
         self.actions = {}
