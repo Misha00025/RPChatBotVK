@@ -14,7 +14,7 @@ class DefaultAPI(BaseAPI):
             if self.cp.find_command_in_line(cm) == self.commands[0]:
                 from app.tdn.api.users import get_users_api
                 api = get_users_api()
-                print(api.add_user_to_me(user.get_user_id(), user.is_admin()))
+                api.add_user_to_me(user.get_user_id(), user.is_admin())
                 message = "--service--\n"
                 message += "Здравствуйте.\nМеня зовут Аркадия.\nЯ -- бот-помощник для проведения текстовых ролевых игр."
                 message += "\nПриятно с Вами познакомиться.\n"

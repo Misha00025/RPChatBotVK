@@ -5,7 +5,6 @@ from app.tdn.api import TdnApi
 
 class FieldsNames:
     user_id = "user_id"
-    status = "status"
     is_admin = "is_admin"
 
 
@@ -17,19 +16,24 @@ class TdnUserApi(TdnApi):
         super().__init__(tdn)
 
     def get_user_info(self, user_id):
-        return self.session.get(f"get_user_info/{user_id}")
+        res = self.session.get(f"users/{user_id}")
+        if res.ok:
+            response = res.json()
+        else:
+            response = res.text
+        return res.ok, response
 
     def user_is_mine(self, user_id):
-        res = self.session.get("user_is_mine", args={_fm.user_id: str(user_id)})
-        if not res.ok:
-            return False
-        return res[_fm.status]
+        res = self.session.get(f"users/{user_id}")
+        return res.ok, res.text
 
     def add_user_to_me(self, user_id, is_admin):
-        res = self.session.post("add_user_to_me", {_fm.user_id: str(user_id), _fm.is_admin: is_admin})
-        print(res.text)
-        return res.ok
+        res = self.session.post("users/add", {_fm.user_id: str(user_id), _fm.is_admin: is_admin})
+        return res.ok, res.text
 
+    def delete_user(self, user_id):
+        res = self.session.delete(f"users/{user_id}")
+        return res.ok, res.text
 
 _api: TdnUserApi = None
 
