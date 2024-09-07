@@ -1,5 +1,6 @@
 #!./venv/bin/python
 from app.modules.BaseModule.BaseAPI import BaseAPI
+from tests.Taisia import Taisia
 
 
 def auto(api: BaseAPI, commands: list):
@@ -15,9 +16,5 @@ def auto(api: BaseAPI, commands: list):
 
 if __name__ == "__main__":
     import app
-    app.start(cmd_prefix="!")
-    # db_test()
-    # api = NotesAPI()
-    # print(api.commands)
-    # auto(api, [["заметки записать: заметка1", "Я проверяю заметку"], ["заметки"], ["заметки удалить 1"]])
-    # dialog()
+    app.start(listener=Taisia())
+    # app.start(cmd_prefix="!")
