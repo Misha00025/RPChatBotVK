@@ -5,11 +5,18 @@ from app.core.CommandParser import CommandParser
 
 class BaseAPI:
 
-    def __init__(self, commands: [] = None):
+    def __init__(self, commands: list | dict = None):
         self.events = {}
         if commands is None:
             commands = []
-        self.commands = commands
+        if type(commands) is dict:
+            self.actions = {}
+            self.commands = []
+            for command, action in commands.items():
+                self.commands.append(command)
+                self.actions[command] = action
+        else:
+            self.commands = commands
         self.cp = CommandParser(commands=self.commands)
 
     def assembly_message(self, user: User, command_lines: [str], request: str) -> str:

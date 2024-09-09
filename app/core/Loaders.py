@@ -7,6 +7,8 @@ from app.modules.BaseModule.DefaultAPI import DefaultAPI
 from app.modules.NotesModule.NotesAPI import NotesAPI
 from app.modules.LocationsModule.LocationsAPI import LocationsAPI
 from app.modules.AliasModule.AliasAPI import AliasAPI
+from app.modules.ItemsModule.ItemsAPI import ItemsAPI
+from app.modules.ItemsModule.WalletAPI import WalletAPI
 
 
 def auto_load_modules_from(path, is_valid):
@@ -42,6 +44,8 @@ def load_modules(is_valid=lambda entity: True):
     modules.append(NotesAPI())
     modules.append(LocationsAPI())
     modules.append(AliasAPI())
+    modules.append(ItemsAPI())
+    modules.append(WalletAPI())
 
     return modules
 
