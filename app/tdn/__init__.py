@@ -28,7 +28,7 @@ class TdnSession:
 
     def get(self, command: str, args: dict = None, versioned = True) -> Response:
         url, args = self._get_param(command, args, versioned)
-        print(self.verify)
+        # print(self.verify)
         return rq.get(url, params=args, headers=self._headers, verify=self.verify)
 
     def post(self, command: str, data: dict, args: dict = None, versioned = True) -> Response:
