@@ -1,3 +1,4 @@
+from time import sleep
 from app import Logger
 
 
@@ -9,9 +10,16 @@ def start(listener = None, cmd_prefix = None):
     from config import version
     from .tdn import check_connect
     global global_cmd_prefix
-    ok, response = check_connect()
-    if not ok:
-        raise Exception(f"Can not connect to server: {response}")
+    ok = False
+    while not ok:
+        try:
+            ok, response = check_connect()
+            if not ok:
+                raise Exception(f"Can not connect to server: {response}")
+        except Exception as e:
+            print(e)
+            sleep(1)
+
     if cmd_prefix is None:
         cmd_prefix = "/"
     global_cmd_prefix = cmd_prefix

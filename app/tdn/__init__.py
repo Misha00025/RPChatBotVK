@@ -4,13 +4,18 @@ from requests import Response
 import requests as rq
 
 class TdnSession:
-    def __init__(self, service_token, protocol, host, port = None):
+    def __init__(self, service_token, protocol, host, port = None, verify=False):
         self._api_version = "v1"
+        self._verify = verify
         if port is not None:
             host += f":{port}"
         self._protocol = protocol
         self._url = f"{protocol}://{host}/api/"
         self._headers = {"Service-token": service_token, "Content-Type": "application/json; charset=utf-8"}
+
+    @property
+    def verify(self):
+        return self._verify
 
     def _get_param(self, command, args, versioned = True):
         url = self._url 
@@ -23,19 +28,20 @@ class TdnSession:
 
     def get(self, command: str, args: dict = None, versioned = True) -> Response:
         url, args = self._get_param(command, args, versioned)
-        return rq.get(url, params=args, headers=self._headers)
+        print(self.verify)
+        return rq.get(url, params=args, headers=self._headers, verify=self.verify)
 
     def post(self, command: str, data: dict, args: dict = None, versioned = True) -> Response:
         url, args = self._get_param(command, args, versioned)
-        return rq.post(url, json=data, headers=self._headers, params=args)
+        return rq.post(url, json=data, headers=self._headers, params=args, verify=self.verify)
 
     def put(self, command: str, data: dict, args: dict = None, versioned = True) -> Response:
         url, args = self._get_param(command, args, versioned)
-        return rq.put(url, params=args, json=data, headers=self._headers)
+        return rq.put(url, params=args, json=data, headers=self._headers, verify=self.verify)
 
     def delete(self, command: str, args: dict = None, versioned = True) -> Response:
         url, args = self._get_param(command, args, versioned)
-        return rq.delete(url, params=args, headers=self._headers)
+        return rq.delete(url, params=args, headers=self._headers, verify=self.verify)
     
     def check(self):
         response = ""
@@ -62,7 +68,7 @@ def get_session() -> TdnSession:
     if _session is None:
         from config import service_token
         from config import api
-        _session = TdnSession(service_token, api.protocol, api.host, api.port)
+        _session = TdnSession(service_token, api.protocol, api.host, api.port, api.verify)
     return _session
 
 
