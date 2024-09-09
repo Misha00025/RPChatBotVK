@@ -2,11 +2,16 @@ import configparser
 import os.path
 
 
+def _get_full_path(filename):
+    full_path = os.path.abspath(filename)
+    return full_path
+
 class ApiInfo:
     version: str = "v1"
     protocol: str = "http"
     host: str = "localhost"
     port: int = 5000
+    verify: str | bool = False
 
 
 def _conf_path(file_name):
@@ -29,7 +34,10 @@ if "Port" in _conf["API"].keys():
     api.port = int(_conf["API"]["Port"])
 else:
     api.port = None
+if "SSLVerify" in _conf["API"].keys():
+    api.verify = _get_full_path(_conf["API"]["SSLVerify"])
 st_file_name = _conf_path(_conf["API"]["ServiceTokenFile"])
+
 
 version = open("version", "r", encoding="utf-8").read()
 silence_prefix = _conf["DEFAULT"]["SilencePrefix"]
