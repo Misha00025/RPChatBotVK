@@ -72,7 +72,7 @@ class TdnItemsApi(TdnApi):
         response = self.session.delete(COMMAND+name, {OWNER_ID: user_id})
         return response.ok, response.text
     
-    def create_item(self, name, description = "None"):
+    def create_item(self, name, description = "None") -> tuple[bool, ParsedItem]:
         response = self.session.post(COMMAND+"create", {NAME: name, DESCRIPTION: description})
         json = response.json()
         res = response.text

@@ -13,7 +13,7 @@ class WalletAPI(BaseAPI):
         self.actions: dict[str, Callable[[User, str], str]]
         commands = {
             PREFIX+" дать": add_item,
-            PREFIX+" забрать": remove_item,
+            PREFIX+" взять": remove_item,
             PREFIX: show_items
         }
         super().__init__(commands)

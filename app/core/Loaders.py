@@ -7,7 +7,7 @@ from app.modules.BaseModule.DefaultAPI import DefaultAPI
 from app.modules.NotesModule.NotesAPI import NotesAPI
 from app.modules.LocationsModule.LocationsAPI import LocationsAPI
 from app.modules.AliasModule.AliasAPI import AliasAPI
-from app.modules.ItemsModule.ItemsAPI import ItemsAPI
+from app.modules.ItemsModule.InventoryAPI import ItemsAPI
 from app.modules.ItemsModule.WalletAPI import WalletAPI
 
 
