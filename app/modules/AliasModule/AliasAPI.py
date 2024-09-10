@@ -1,4 +1,4 @@
-from app.core import alias_managent as am
+from app.core import alias_management as am
 from ..BaseModule.BaseAPI import BaseAPI
 from app.core.User import User
 

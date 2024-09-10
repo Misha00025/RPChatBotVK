@@ -2,7 +2,7 @@ from datetime import datetime
 
 from .vk_sender import VkSender
 from vk_api.longpoll import Event
-from app.core import alias_managent as am
+from app.core import alias_management as am
 from app.core.base_interface.Response import Response
 
 

@@ -28,11 +28,13 @@ class Arkadia:
             finally:
                 self.log.save_logs()
 
-    def _events_listen(self):
+    def _get_listener_and_sender(self):
         from app.core.vk_used.vk_listener import VkListener
         from app.core.vk_used.vk_sender import VkSender
-        listener = VkListener()
-        self.sender = VkSender()
+        return VkListener(), VkSender()
+
+    def _events_listen(self):
+        listener, self.sender = self._get_listener_and_sender()
         self.keyboard = VkKeyboard()
         redirector = VkRouter(self.sender, self.log)
 
