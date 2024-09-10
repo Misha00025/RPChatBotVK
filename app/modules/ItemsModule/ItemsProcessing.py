@@ -22,7 +22,7 @@ def get_wallet(inventory: Inventory, params):
         amount = 0
     else:
         amount = item.amount 
-    return f"Деньги на счету {am.get_alias(inventory.owner_id)}: {amount}"
+    return f"Деньги на счету игрока {am.get_alias(inventory.owner_id)}: {amount}"
 
 
 def show_items(user: User, params):
@@ -52,9 +52,9 @@ def add_item(user: User, params):
     ok, res = inv.add_item(name, amount)
     if not ok:
         print(res)
-        return f"Не удалось добавить предмет '{name}' пользователю {am.get_alias(user.get_user_id())}"
+        return f"Не удалось добавить предмет '{name}' игроку {am.get_alias(user.get_user_id())}"
     ok, item = inv.get_item(name)
-    return (f"Предмет {name} в количестве {amount} шт. добавлен в инвентарь пользователя {am.get_alias(user.get_user_id())}\n"
+    return (f"Предмет {name} в количестве {amount} шт. добавлен в инвентарь игрока {am.get_alias(user.get_user_id())}\n"
             f"Сейчас в инвентаре: {item.amount}")
 
 def remove_item(user: User, params):
@@ -69,5 +69,5 @@ def remove_item(user: User, params):
         return f"Невозможно удалить предмет '{name}' из инвентаря игрока {am.get_alias(user.get_user_id())}"
     have, item = inv.get_item(name)
     if not have:
-        return f"Предмет '{name}' был полностью удалён из инвентаря пользователя {am.get_alias(user.get_user_id())}"
+        return f"Предмет '{name}' был полностью удалён из инвентаря игрока {am.get_alias(user.get_user_id())}"
     return f"Количество предмета {name} в инвентаре игрока {am.get_alias(user.get_user_id())} уменьшено.\nОсталось: {item.amount}"
