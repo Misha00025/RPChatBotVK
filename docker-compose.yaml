@@ -1,0 +1,8 @@
+services:
+  rpchatbot:
+    build: ./
+    container_name: rpbot
+    volumes:
+      - './configs:/app/configs:rw'
+      - './logs:/app/logs:rw'
+      - './saves:/app/saves:rw'

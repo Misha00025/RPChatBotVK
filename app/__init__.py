@@ -17,7 +17,7 @@ def start(listener = None, cmd_prefix = None):
             if not ok:
                 raise Exception(f"Can not connect to server: {response}")
         except Exception as e:
-            print(e)
+            logger.write_and_print(e)
             sleep(1)
 
     if cmd_prefix is None:

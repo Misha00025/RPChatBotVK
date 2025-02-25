@@ -52,9 +52,11 @@ class TdnSession:
         try:
             ping = self.get("ping", versioned=True).ok
             access = self.get("check_access", versioned=False)
-            if access.ok == False:
+            print(access)
+            if not access.ok:
                 response = "Not valid token"
-            response = "Success!"
+            else:
+                response = "Success!"
         except Exception as err:
             response = err        
         return (ping and access.ok), response
