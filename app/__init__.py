@@ -7,18 +7,21 @@ global_cmd_prefix = "!!!"
 
 
 def start(listener = None, cmd_prefix = None):
-    from config import version
+    from config import version, api
     from .tdn import check_connect
     global global_cmd_prefix
     ok = False
-    while not ok:
-        try:
-            ok, response = check_connect()
-            if not ok:
-                raise Exception(f"Can not connect to server: {response}")
-        except Exception as e:
-            logger.write_and_print(e)
-            sleep(1)
+    if api is not None:
+        while not ok:
+            try:
+                ok, response = check_connect()
+                if not ok:
+                    raise Exception(f"Can not connect to server: {response}")
+            except Exception as e:
+                logger.write_and_print(e)
+                sleep(1)
+    else:
+        print("Bot is running without connection to server")
 
     if cmd_prefix is None:
         cmd_prefix = "/"

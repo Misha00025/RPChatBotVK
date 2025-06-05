@@ -9,6 +9,7 @@ from app.modules.LocationsModule.LocationsAPI import LocationsAPI
 from app.modules.AliasModule.AliasAPI import AliasAPI
 from app.modules.ItemsModule.InventoryAPI import ItemsAPI
 from app.modules.ItemsModule.WalletAPI import WalletAPI
+import config
 
 
 def auto_load_modules_from(path, is_valid):
@@ -36,16 +37,14 @@ def auto_load_modules_from(path, is_valid):
 
 def load_modules(is_valid=lambda entity: True):
     modules = []
-
-    # modules.append(BaseAPI())
-    # modules.append(CharacterAPI())
     modules.append(DefaultAPI())
     modules.append(DicesAPI())
-    modules.append(NotesAPI())
     modules.append(LocationsAPI())
     modules.append(AliasAPI())
-    modules.append(ItemsAPI())
-    modules.append(WalletAPI())
+    if config.api is not None:
+        modules.append(NotesAPI())
+        modules.append(ItemsAPI())
+        modules.append(WalletAPI())
 
     return modules
 

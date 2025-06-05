@@ -135,3 +135,4 @@ log.txt
 test.py
 configs/*
 saves/
+.vscode/*
