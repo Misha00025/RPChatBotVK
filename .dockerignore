@@ -2,5 +2,8 @@
 log.txt
 /logs
 test.py
-configs/*
+configs/
 saves/
+tests/
+venv/
+exe_settings/

@@ -39,7 +39,7 @@ class Arkadia:
         redirector = VkRouter(self.sender, self.log)
 
         listener.add_action_to_event(lambda event: redirector.route_message(event), VkEventType.MESSAGE_NEW)
+        listener.add_action_to_event(lambda event: redirector.send_response(event), VkEventType.MESSAGE_NEW)
         listener.add_action_to_event(lambda event: redirector.edit_routed_message(event), VkEventType.MESSAGE_EDIT)
-        listener.add_action_to_event(lambda event: self.keyboard.send(event), VkEventType.MESSAGE_NEW)
         listener.start_listen()
 

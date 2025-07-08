@@ -35,7 +35,6 @@ class VkRouter:
             return
         if self.is_service(event):
             return
-        self.send_response(event)
         if not self.is_silence(event):
             self.redirector.redirect_message(event)
 
