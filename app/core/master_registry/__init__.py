@@ -3,7 +3,7 @@ from app.core.DataSaver import load, save
 
 SAVE_NAME = "masters"
 
-_masters = []
+_masters = set()
 
 
 
