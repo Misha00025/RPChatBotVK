@@ -1,52 +1,62 @@
 from app.core.User import User
 from app.modules.BaseModule.BaseAPI import BaseAPI
-from app.tdn.api.notes import get_notes_api
+from app import model
 
-
-def _add_note(user: User, params: (str, str)) -> str:
-    api = get_notes_api()
+def _add_note(user: User, params: tuple[str, str]) -> str:
+    character = model.my_character(user)
+    if character is None:
+        return "Простите, но у вас пока нет персонажа"
     header, body = params
-    if user.group_id is not None:
-        user_id = user.get_user_id()
-        api.add_note(user_id, header, body)
+    ok = character.add_note(header, body)
+    if ok:
         return "Запись успешно добавлена!"
-    return "Не получилось добавить запись, обратитесь к админу :(\n" \
-           "(Если он спросит, назовите код ошибки: 2.1)"
+    else:
+        return "Не получилось добавить запись, обратитесь к админу :(\n"
 
 
 def _get_notes(user: User, page: str = "") -> str:
-    return ""
+    character = model.my_character(user)
+    if character is None:
+        return "Простите, но у вас пока нет персонажа"
+    return "Я пока не умею показывать заметки"
 
 
 def _del_note(user: User, note_id: str) -> str:
-    return ""
+    character = model.my_character(user)
+    if character is None:
+        return "Простите, но у вас пока нет персонажа"
+    return "Я пока не умею удалять заметки"
 
 
 prefix = "заметки"
 
 
 def find_note(line: str, request: str):
-    note = request.split(line+'\n')[1]
+    tmp = request.split(line+'\n')
+    if len(tmp) > 1:
+        note = tmp[1]
+    else:
+        note = ""
     return note
 
 
 class NotesAPI(BaseAPI):
 
     def __init__(self):
-        self.commands = ["записать:", "удалить"]
+        self.commands = ["записать:", "удалить", "посмотреть"]
         for i in range(len(self.commands)):
             if self.commands[i] == "":
                 self.commands[i] = prefix
                 continue
             self.commands[i] = prefix + " " + self.commands[i]
-        self._actions: {} = {
-            # self.commands[0]: lambda user, b: _get_notes(user, b),
+        self._actions: dict = {
             self.commands[0]: lambda user, b: _add_note(user, b),
-            self.commands[1]: lambda user, b: _del_note(user, b)
+            self.commands[1]: lambda user, b: _del_note(user, b),
+            self.commands[2]: lambda user, b: _get_notes(user, b),
         }
         super().__init__(self.commands)
 
-    def assembly_message(self, user, command_lines: [str], request) -> str:
+    def assembly_message(self, user, command_lines: list[str], request) -> str:
         answer = ""
         for line in command_lines:
             command = self.cp.find_command_in_line(line)

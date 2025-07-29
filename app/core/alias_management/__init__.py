@@ -25,14 +25,14 @@ def set_alias(user_id, alias):
 
 
 def save_alias():
-    save(_get_instance(), SAVE_NAME)
+    save(_get_instance()._alias_list, SAVE_NAME)
 
 
 def load_alias():
     global _instance
     err, res = load(SAVE_NAME)
     if not err:
-        _instance = res
+        _instance = AliasMaker(res)
 
 
 load_alias()

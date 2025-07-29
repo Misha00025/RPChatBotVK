@@ -9,12 +9,12 @@ class VkSender:
         self._api = self._connector.get_api()
 
     def send_response(self, response: Response):
-        addressees, message = response.addressee, response.message
+        addressees, message, attachments = response.addressee, response.message, response.attachments
         if response.is_chat_response:
             self._write_msg_to_chat(addressees[0], message)
         else:
             for addressee in addressees:
-                self._write_msg(addressee, message)
+                self._write_msg(addressee, message, attachments)
 
     def edit_message(self, response: Response):
         # print("Edit messages in vk")
@@ -31,23 +31,39 @@ class VkSender:
             dont_parse_links=1
         )
 
-    def _write_msg(self, user_id, message):
+    def _write_msg(self, user_id, message, attachment = None):
         if message == "":
             return
-        self._api.messages.send(
-            user_id=user_id,
-            message=message,
-            random_id=get_random_id()
-        )
+        if attachment is not None:
+            self._api.messages.send(
+                user_id=user_id,
+                message=message,
+                random_id=get_random_id(),
+                attachment = attachment
+            )
+        else:
+            self._api.messages.send(
+                user_id=user_id,
+                message=message,
+                random_id=get_random_id()
+            )
 
-    def _write_msg_to_chat(self, chat_id, message):
+    def _write_msg_to_chat(self, chat_id, message, attachment = None):
         if message == "":
             return
-        self._api.messages.send(
-            chat_id=chat_id,
-            message=message,
-            random_id=get_random_id()
-        )
+        if attachment is not None:
+            self._api.messages.send(
+                chat_id=chat_id,
+                message=message,
+                random_id=get_random_id(),
+                attachment = attachment
+            )
+        else:
+                self._api.messages.send(
+                chat_id=chat_id,
+                message=message,
+                random_id=get_random_id(),
+            )
 
 
 

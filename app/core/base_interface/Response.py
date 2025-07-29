@@ -10,6 +10,7 @@ class Response:
         self.is_chat_response = chat_id is not None
         if self.is_chat_response:
             self.addressee = [chat_id]
+        self.attachments = None
 
     def set_chat_id(self, chat_id):
         self.is_chat_response = chat_id is not None

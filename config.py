@@ -31,7 +31,7 @@ st_file_name: str = None
 
 if "API" in _conf.keys():
     api = ApiInfo()
-    api.version = _conf["API"]["Version"]
+    # api.version = _conf["API"]["Version"]
     api.protocol = _conf["API"]["Protocol"]
     api.host = _conf["API"]["Host"]
     if "Port" in _conf["API"].keys():

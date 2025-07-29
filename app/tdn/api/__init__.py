@@ -1,21 +1,6 @@
-from .. import TdnSession
+from app.tdn.api.character_api import TdnCharacterApi
 
 
-class TdnApi:
-    def __init__(self, tdn: TdnSession):
-        self._session = tdn
-
-    @property
-    def session(self):
-        return self._session
-
-
-_api: TdnApi = None
-
-
-def get_tdn_api() -> TdnApi:
-    global _api
-    if _api is None:
-        from app.tdn import get_session
-        _api = TdnApi(get_session())
-    return _api
+def character(character_id) -> TdnCharacterApi:
+    from app.tdn import get_session
+    return TdnCharacterApi(get_session(), character_id)
