@@ -21,19 +21,21 @@ def _generate_message(event: Event):
 
 def _get_attachments(event: Event):
     from app.core.vk_used.vk_connector import get_connector
+    from app import Logger as log
     api = get_connector().get_api()
     full_message = api.messages.getById(message_ids=event.message_id)['items'][0]
     attachments = full_message.get('attachments')
     
     if attachments:
-        attachments = []
+        result_attachments = []
         for attach in attachments:
             attach_type = attach['type']
+            log.write_and_print(f"Attach Type: {attach_type}")        
             owner_id = attach[attach_type]['owner_id']
             media_id = attach[attach_type]['id']
             access_key = attach[attach_type].get('access_key') or ''
-            attachments.append(f"{attach_type}{owner_id}_{media_id}{f'_{access_key}' if access_key else ''}")
-        return ",".join( attachments )
+            result_attachments.append(f"{attach_type}{owner_id}_{media_id}{f'_{access_key}' if access_key else ''}")
+        return ",".join( result_attachments )
     return None
 
 _redirected_messages = {}
