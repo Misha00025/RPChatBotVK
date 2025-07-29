@@ -41,6 +41,8 @@ class VkRouter:
             self.redirector.send_to_masters(event)
 
     def send_response(self, event):
+        if self.is_redirect(event) or self.is_service(event):
+            return
         response: Response = self.make_response(event)
         message = response.message
         if message == "":
