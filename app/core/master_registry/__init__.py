@@ -11,7 +11,7 @@ def get_masters():
     return _masters.copy()
 
 def append_masters(user_id):
-    _masters.append(str(user_id))
+    _masters.add(str(user_id))
     save_masters()
 
 def remove_masters(user_id):
