@@ -40,7 +40,7 @@ class Arkadia:
         from app.core.master_registry import append_masters, remove_masters
         from app.core.CommandParser import CommandParser
         from app import global_cmd_prefix
-        self.log.write_and_print("check admin from me")
+        self.log.only_print("check admin from me")
         parser = CommandParser(["admin on", "admin off"], global_cmd_prefix)
         request = event.text
         command_lines: list = parser.find_command_lines(request)

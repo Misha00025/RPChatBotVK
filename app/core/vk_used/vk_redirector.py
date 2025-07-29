@@ -19,6 +19,23 @@ def _generate_message(event: Event):
     return message
 
 
+def _get_attachments(event: Event):
+    from app.core.vk_used.vk_connector import get_connector
+    api = get_connector().get_api()
+    full_message = api.messages.getById(message_ids=event.message_id)['items'][0]
+    attachments = full_message.get('attachments')
+    
+    if attachments:
+        attachments = []
+        for attach in attachments:
+            attach_type = attach['type']
+            owner_id = attach[attach_type]['owner_id']
+            media_id = attach[attach_type]['id']
+            access_key = attach[attach_type].get('access_key') or ''
+            attachments.append(f"{attach_type}{owner_id}_{media_id}{f'_{access_key}' if access_key else ''}")
+        return ",".join( attachments )
+    return None
+
 _redirected_messages = {}
 _last_clear = datetime
 
@@ -52,6 +69,7 @@ class VkRedirector:
         users.remove(message_owner)
         message = _generate_message(event)
         response = Response(message, users)
+        response.attachments = _get_attachments(event)
         message_id = str(event.message_id)
         _redirected_messages[message_id] = RedirectedMessage(users, message)
         self.sender.send_response(response)
@@ -65,6 +83,7 @@ class VkRedirector:
         message = _generate_message(event)
         print(f"{users};\n{message}")
         response = Response(message, users)
+        response.attachments = _get_attachments(event)
         self.sender.edit_message(response)
 
     def send_to_masters(self, event: Event):
@@ -77,6 +96,7 @@ class VkRedirector:
             users.remove(message_owner)
         message = _generate_message(event)
         response = Response(message, users)
+        response.attachments = _get_attachments(event)
         message_id = str(event.message_id)
         _redirected_messages[message_id] = RedirectedMessage(users, message)
         self.sender.send_response(response)
