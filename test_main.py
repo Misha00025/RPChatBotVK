@@ -16,5 +16,5 @@ def auto(api: BaseAPI, commands: list):
 
 if __name__ == "__main__":
     import app
-    app.start(listener=Taisia())
+    app.start(cmd_prefix="!!!")
     # app.start(cmd_prefix="!")

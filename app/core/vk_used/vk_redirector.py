@@ -67,6 +67,22 @@ class VkRedirector:
         response = Response(message, users)
         self.sender.edit_message(response)
 
+    def send_to_masters(self, event: Event):
+        from app.core.master_registry import get_masters
+        if event.from_chat: 
+            return
+        message_owner = str(event.user_id)
+        users: list = get_masters()
+        if message_owner in users:
+            users.remove(message_owner)
+        message = _generate_message(event)
+        response = Response(message, users)
+        message_id = str(event.message_id)
+        _redirected_messages[message_id] = RedirectedMessage(users, message)
+        self.sender.send_response(response)
+
+
+
 
 class RedirectedMessage:
     def __init__(self, users, text):
