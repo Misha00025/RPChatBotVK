@@ -41,9 +41,13 @@ class Inventory:
             res = self.api.post(**item)
             return res.ok
         else:
-            item["amount"] = amount
             if description != None:
                 item["description"] = description
-            res = self.api.put(item["id"], item)
+            data = {
+                "name": item["name"],
+                "amount": amount,
+                "description": item["description"],
+            }
+            res = self.api.put(item["id"], data)
             return res.ok
         
