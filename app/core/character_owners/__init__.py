@@ -8,6 +8,7 @@ _save_name = "characters"
 
 def set_character(user_id, character_id):
     _characters[str(user_id)] = int(character_id)
+    save_characters()
 
 def as_character(user_id) -> int:
     if user_id not in _characters:
