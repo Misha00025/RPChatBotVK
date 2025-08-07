@@ -11,9 +11,10 @@ def set_character(user_id, character_id):
     save_characters()
 
 def as_character(user_id) -> int:
+    user_id = str(user_id)
     if user_id not in _characters:
         return -1
-    return _characters[str(user_id)]
+    return _characters[user_id]
 
 
 def save_characters():
