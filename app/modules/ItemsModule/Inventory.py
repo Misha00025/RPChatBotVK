@@ -27,18 +27,14 @@ class Inventory:
             if new_amount <= 0:
                 return False
         else:
-            new_amount = item["amount"] + amount
+            new_amount = int(item["amount"]) + int(amount)
         return self.update_item(name, new_amount)
 
     def update_item(self, name, amount, description = None):
         item = self.get_item(name)
         if item is None:
-            item = {
-                "name": name,
-                "amount": int(amount),
-                "description": description if description is not None else ""
-            }
-            res = self.api.post(**item)
+            description = description if description is not None else ""
+            res = self.api.post(name, description, amount)
             return res.ok
         else:
             if description != None:

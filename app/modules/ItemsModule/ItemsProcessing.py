@@ -58,6 +58,8 @@ def add_item(user: User, params):
 
 def remove_item(user: User, params):
     name, amount = parse_message(params)
+    if name == "":
+        return "Невозможно убрать предмет без названия"
     if amount <= 0:
         return "Количество предмета должно быть больше 0"
     inv = Inventory(user.get_user_id())
