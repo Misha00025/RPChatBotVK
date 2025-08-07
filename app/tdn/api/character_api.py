@@ -46,3 +46,6 @@ class TdnCharacterApi(TdnApi):
 
     def notes(self) -> TdnCharacterNotesApi:
         return TdnCharacterNotesApi(self.session, self._id)
+    
+    def get(self):
+        return self.session.get(f"/characters/{self._id}")
