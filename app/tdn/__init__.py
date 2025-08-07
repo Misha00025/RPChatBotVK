@@ -3,6 +3,10 @@ import json
 from requests import Response
 import requests as rq
 
+def print_result(res: rq.Response):
+    print(f"Response:\n - Code: {res.status_code}\n - Message: {res.text}")
+
+
 class TdnSession:
     def __init__(self, service_token, protocol, host, port = None, verify=False):
         self._api_version = ""
@@ -29,19 +33,27 @@ class TdnSession:
 
     def get(self, command: str, args: dict = None, versioned = True) -> Response:
         url, args = self._get_param(command, args, versioned)
-        return rq.get(url, params=args, headers=self._headers, verify=self.verify)
+        res = rq.get(url, params=args, headers=self._headers, verify=self.verify)
+        print_result(res)
+        return res
 
     def post(self, command: str, data: dict, args: dict = None, versioned = True) -> Response:
         url, args = self._get_param(command, args, versioned)
-        return rq.post(url, json=data, headers=self._headers, params=args, verify=self.verify)
+        res = rq.post(url, json=data, headers=self._headers, params=args, verify=self.verify)
+        print_result(res)
+        return res
 
     def put(self, command: str, data: dict, args: dict = None, versioned = True) -> Response:
         url, args = self._get_param(command, args, versioned)
-        return rq.put(url, params=args, json=data, headers=self._headers, verify=self.verify)
+        res = rq.put(url, params=args, json=data, headers=self._headers, verify=self.verify)
+        print_result(res)
+        return res
 
     def delete(self, command: str, args: dict = None, versioned = True) -> Response:
         url, args = self._get_param(command, args, versioned)
-        return rq.delete(url, params=args, headers=self._headers, verify=self.verify)
+        res = rq.delete(url, params=args, headers=self._headers, verify=self.verify)
+        print_result(res)
+        return res
     
     def connect(self):
         response = ""
