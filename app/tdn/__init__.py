@@ -4,7 +4,8 @@ from requests import Response
 import requests as rq
 
 def print_result(res: rq.Response):
-    print(f"Response:\n - Code: {res.status_code}\n - Message: {res.text}")
+    from app.Logger import write_and_print
+    write_and_print(f"Response:\n - Code: {res.status_code}\n - Message: {res.text}")
 
 
 class TdnSession:
