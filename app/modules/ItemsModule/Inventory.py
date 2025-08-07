@@ -1,37 +1,49 @@
-from app.tdn.api.items import get_items_api
+from app.tdn.api import character
+from app.core.character_owners import as_character
 
 
 class Inventory:
     def __init__(self, owner_id) -> None:
-        self.api = get_items_api()
+        self.api = character(as_character(owner_id)).items()
         self.owner_id = owner_id
 
-    def get_item(self, name):
-        return self.api.get_item(name, self.owner_id)
+    def get_item(self, name) -> dict:
+        items = self.get_items()
+        for item in items:
+            if item["name"] == name:
+                return item
+        return None
     
     def get_items(self):
-        return self.api.get_items(self.owner_id)
-    
-    def add_item(self, name, amount):
-        return self.update_item(name, amount)
+        res = self.api.get()
+        if res.ok:
+            return res.json()["items"]
+        return []
 
-    def remove_item(self, name, amount):
-        have, item = self.get_item(name)
-        if not have:
-            return False, ""
-        if item.amount <= amount:
-            self.api.remove_item(name, self.owner_id)
-            return True, None
-        return self.update_item(name, -amount)
-
-    def update_item(self, name, amount):
-        have, item = self.get_item(name)
-        if not have:
-            ok, _ = self.api.get_item(name)
-            if not ok:
-                ok, _ = self.api.create_item(name, name)
-        if not have:
-            return self.api.add_item(name, self.owner_id, amount)
+    def change_item_amount(self, name, amount):
+        item = self.get_item(name)
+        if item is None:
+            new_amount = amount
+            if new_amount <= 0:
+                return False
         else:
-            amount = item.amount + amount
-            return self.api.update_item(name, self.owner_id, amount)
+            new_amount = item["amount"] + amount
+        return self.update_item(name, new_amount)
+
+    def update_item(self, name, amount, description = None):
+        item = self.get_item(name)
+        if item is None:
+            item = {
+                "name": name,
+                "amount": amount,
+                "description": description if description is not None else ""
+            }
+            res = self.api.post(**item)
+            return res.ok
+        else:
+            item["amount"] = amount
+            if description != None:
+                item["description"] = description
+            res = self.api.put(item["id"], item)
+            return res.ok
+        

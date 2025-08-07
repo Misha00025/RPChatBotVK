@@ -17,11 +17,11 @@ def parse_message(message: str):
 
 
 def get_wallet(inventory: Inventory, params):
-    ok, item = inventory.get_item(params)
-    if item is None or item.amount is None:
+    item = inventory.get_item(params)
+    if item is None:
         amount = 0
     else:
-        amount = item.amount 
+        amount = item["amount"]
     return f"Деньги на счету игрока {am.get_alias(inventory.owner_id)}: {amount}"
 
 
@@ -36,9 +36,9 @@ def show_items(user: User, params):
         return f"Не получилось посмотреть инвентарь игрока {am.get_alias(user.get_user_id())}"
     for item in items:
         i += 1
-        amount = item.amount
+        amount = item["amount"]
         if amount is None: amount = 0
-        message += f"\n{i}. {item.name}: {amount}"
+        message += f"\n{i}. {item["name"]}: {amount}"
     return f"Инвентарь игрока {am.get_alias(user.get_user_id())}: {message}\n"
 
 
@@ -49,9 +49,8 @@ def add_item(user: User, params):
     if amount <= 0:
         return "Количество предмета должно быть больше 0"
     inv = Inventory(user.get_user_id())
-    ok, res = inv.add_item(name, amount)
+    ok = inv.change_item_amount(name, amount)
     if not ok:
-        print(res)
         return f"Не удалось добавить предмет '{name}' игроку {am.get_alias(user.get_user_id())}"
     ok, item = inv.get_item(name)
     return (f"Предмет '{name}' в количестве {amount} шт. добавлен в инвентарь игрока {am.get_alias(user.get_user_id())}\n"
@@ -59,15 +58,28 @@ def add_item(user: User, params):
 
 def remove_item(user: User, params):
     name, amount = parse_message(params)
-    if name == "":
-        return "Невозможно удалить предмет без названия"
     if amount <= 0:
         return "Количество предмета должно быть больше 0"
     inv = Inventory(user.get_user_id())
-    ok, _ = inv.remove_item(name, amount)
+    ok = inv.change_item_amount(name, -amount)
     if not ok:
         return f"Невозможно удалить предмет '{name}' из инвентаря игрока {am.get_alias(user.get_user_id())}"
-    have, item = inv.get_item(name)
-    if not have:
+    item = inv.get_item(name)
+    if item is None:
         return f"Предмет '{name}' был полностью удалён из инвентаря игрока {am.get_alias(user.get_user_id())}"
-    return f"Количество предмета '{name}' в инвентаре игрока {am.get_alias(user.get_user_id())} уменьшено.\nОсталось: {item.amount}"
+    return f"Количество предмета '{name}' в инвентаре игрока {am.get_alias(user.get_user_id())} уменьшено.\nОсталось: {item["amount"]}"
+
+def set_item(user: User, params):
+    name, amount = parse_message(params)
+    if name == "":
+        return "Невозможно изменить предмет без названия"
+    if amount <= 0:
+        return "Количество предмета должно быть больше 0"
+    inv = Inventory(user.get_user_id())
+    ok = inv.update_item(name, amount)
+    if not ok:
+        return f"Невозможно изменить количество предмета '{name}' в инвентаре игрока {am.get_alias(user.get_user_id())}"
+    item = inv.get_item(name)
+    if item is None:
+        return f"Предмет '{name}' был удалён из инвентаря игрока {am.get_alias(user.get_user_id())}"
+    return f"Количество предмета '{name}' в инвентаре игрока {am.get_alias(user.get_user_id())} изменено.\nОсталось: {item["amount"]}"

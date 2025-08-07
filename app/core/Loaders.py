@@ -8,7 +8,7 @@ from app.modules.NotesModule.NotesAPI import NotesAPI
 from app.modules.LocationsModule.LocationsAPI import LocationsAPI
 from app.modules.AliasModule.AliasAPI import AliasAPI
 # from app.modules.ItemsModule.InventoryAPI import ItemsAPI
-# from app.modules.ItemsModule.WalletAPI import WalletAPI
+from app.modules.ItemsModule.WalletAPI import WalletAPI
 import config
 
 
@@ -41,11 +41,12 @@ def load_modules(is_valid=lambda entity: True):
     modules.append(DicesAPI())
     modules.append(LocationsAPI())
     modules.append(AliasAPI())
+    print("Базовые модули подключены")
     if config.api is not None:
-        modules.append(NotesAPI())
+        # modules.append(NotesAPI())
         # modules.append(ItemsAPI())
-        # modules.append(WalletAPI())
-
+        modules.append(WalletAPI())
+        print ("Сетевые модули подключены")
     return modules
 
 def load_commands(modules, is_valid=lambda entity: True) -> list:

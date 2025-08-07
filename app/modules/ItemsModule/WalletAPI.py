@@ -1,7 +1,7 @@
 from typing import Callable
 from app.core.User import User
 from app.modules.BaseModule.BaseAPI import BaseAPI
-from .ItemsProcessing import show_items, add_item, remove_item
+from .ItemsProcessing import show_items, add_item, remove_item, set_item
 
 
 PREFIX = "кошель"
@@ -12,8 +12,9 @@ class WalletAPI(BaseAPI):
     def __init__(self):
         self.actions: dict[str, Callable[[User, str], str]]
         commands = {
-            PREFIX+" дать": add_item,
-            PREFIX+" взять": remove_item,
+            PREFIX+" добавить": add_item,
+            PREFIX+" убрать": remove_item,
+            PREFIX+" установить": set_item,
             PREFIX: show_items
         }
         super().__init__(commands)

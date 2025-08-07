@@ -7,6 +7,18 @@ class TdnCharacterItemsApi(TdnApi):
         super().__init__(tdn)
         self._id = character_id
 
+    def get(self):
+        return self.session.get(f"/characters/{self._id}/items")
+
+    def post(self, name, description, amount):
+        return self.session.post(f"/characters/{self._id}/items", data={"name": name, "description": description, "amount": amount})
+    
+    def put(self, item_id, data):
+        return self.session.put(f"/characters/{self._id}/items/{item_id}", data=data)
+    
+    def delete(self, item_id):
+        return self.session.delete(f"/characters/{self._id}/items/{item_id}")
+
 
 class TdnCharacterNotesApi(TdnApi):
     def __init__(self, tdn, character_id):
