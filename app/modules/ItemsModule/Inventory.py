@@ -35,7 +35,7 @@ class Inventory:
         if item is None:
             item = {
                 "name": name,
-                "amount": amount,
+                "amount": int(amount),
                 "description": description if description is not None else ""
             }
             res = self.api.post(**item)
@@ -45,7 +45,7 @@ class Inventory:
                 item["description"] = description
             data = {
                 "name": item["name"],
-                "amount": amount,
+                "amount": int(amount),
                 "description": item["description"],
             }
             res = self.api.put(item["id"], data)
