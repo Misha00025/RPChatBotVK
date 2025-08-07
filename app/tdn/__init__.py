@@ -2,10 +2,10 @@ import json
 
 from requests import Response
 import requests as rq
+from app.Logger import write_and_print, only_print
 
 def print_result(res: rq.Response):
-    from app.Logger import write_and_print
-    write_and_print(f"Response:\n - Code: {res.status_code}\n - Message: {res.text}")
+    only_print(f"Response:\n - Code: {res.status_code}\n - Message: {res.text}")
 
 
 class TdnSession:
@@ -30,6 +30,7 @@ class TdnSession:
         url += f"/{command}"
         if args is None:
             args = {}
+        only_print(f"Request params: {url}, {args}")
         return url, args
 
     def get(self, command: str, args: dict = None, versioned = True) -> Response:
