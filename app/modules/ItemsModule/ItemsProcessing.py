@@ -38,7 +38,7 @@ def show_items(user: User, params):
         i += 1
         amount = item["amount"]
         if amount is None: amount = 0
-        message += f"\n{i}. {item["name"]}: {amount}"
+        message += f"\n{i}. {item['name']}: {amount}"
     return f"Инвентарь игрока {am.get_alias(user.get_user_id())}: {message}\n"
 
 
@@ -54,7 +54,7 @@ def add_item(user: User, params):
         return f"Не удалось добавить предмет '{name}' игроку {am.get_alias(user.get_user_id())}"
     ok, item = inv.get_item(name)
     return (f"Предмет '{name}' в количестве {amount} шт. добавлен в инвентарь игрока {am.get_alias(user.get_user_id())}\n"
-            f"Сейчас в инвентаре: {item.amount}")
+            f"Сейчас в инвентаре: {item['amount']}")
 
 def remove_item(user: User, params):
     name, amount = parse_message(params)
@@ -67,7 +67,7 @@ def remove_item(user: User, params):
     item = inv.get_item(name)
     if item is None:
         return f"Предмет '{name}' был полностью удалён из инвентаря игрока {am.get_alias(user.get_user_id())}"
-    return f"Количество предмета '{name}' в инвентаре игрока {am.get_alias(user.get_user_id())} уменьшено.\nОсталось: {item["amount"]}"
+    return f"Количество предмета '{name}' в инвентаре игрока {am.get_alias(user.get_user_id())} уменьшено.\nОсталось: {item['amount']}"
 
 def set_item(user: User, params):
     name, amount = parse_message(params)
@@ -82,4 +82,4 @@ def set_item(user: User, params):
     item = inv.get_item(name)
     if item is None:
         return f"Предмет '{name}' был удалён из инвентаря игрока {am.get_alias(user.get_user_id())}"
-    return f"Количество предмета '{name}' в инвентаре игрока {am.get_alias(user.get_user_id())} изменено.\nОсталось: {item["amount"]}"
+    return f"Количество предмета '{name}' в инвентаре игрока {am.get_alias(user.get_user_id())} изменено.\nОсталось: {item['amount']}"
