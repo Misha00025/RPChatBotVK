@@ -56,7 +56,7 @@ def replace(source_line: str, old_and_new_list: list) -> str:
     if subline != source_line:
         next_line = source_line[index + len(subline): ]
         new_line += replace(next_line, old_and_new_list)
-    log.write_and_print((source_line, old_and_new_list))
+    log.write_and_print((new_line, old_and_new_list))
     result = new_line
     return result
 
@@ -117,11 +117,14 @@ class DicesAPI(BaseAPI):
     def assembly_message(self, user, command_lines: list[str], request) -> str:
         import numexpr as ne
         message = ""
-        for line in command_lines:                
+        for line in command_lines:
+            formula = line                
             clean_line = str(line).replace(" ", "")
             matches = re.findall(r':([^:]+):', clean_line)
             sublines_with_results = []
             process_characteristics(matches, sublines_with_results, user)
+            formula = replace(formula, sublines_with_results)
+            sublines_with_results = []
             sublines = parse_line_on_sublines(clean_line)
             # print(sublines)
             for subline in sublines:
@@ -135,7 +138,7 @@ class DicesAPI(BaseAPI):
                     sublines_with_results.append((subline, result))
                     log.write_and_print(sublines_with_results)
             try:
-                formula = replace(line, sublines_with_results)
+                formula = replace(formula, sublines_with_results)
             except:
                 return None
             clean_formula = redecorate(formula)
