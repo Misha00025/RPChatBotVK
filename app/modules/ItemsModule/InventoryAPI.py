@@ -22,11 +22,15 @@ class ItemsAPI(BaseAPI):
 
     def assembly_message(self, user, command_lines: list[str], request) -> str:
         answer = ""
+        i = 0
         for line in command_lines:
             command = self.cp.find_command_in_line(line)
             if command == "":
                 continue
+            i += 1
             params = self.cp.find_parameters_in_line(line)
-            answer += self.actions[command](user, params)
+            answer += self.actions[command](user, params) + "\n"
+        if i > 1:
+            answer += show_items(user, "")
         return answer
     

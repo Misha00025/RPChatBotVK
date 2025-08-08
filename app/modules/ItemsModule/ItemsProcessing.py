@@ -51,7 +51,7 @@ def add_item(user: User, params):
     if not ok:
         return f"Не удалось добавить предмет '{name}' игроку {am.get_alias(user.get_user_id())}"
     item = inv.get_item(name)
-    return (f"Предмет '{name}' в количестве {amount} шт. добавлен в инвентарь игрока {am.get_alias(user.get_user_id())}\n"
+    return (f"Предмет '{name}' в количестве {amount} шт. добавлен в инвентарь игрока {am.get_alias(user.get_user_id())}. "
             f"Сейчас в инвентаре: {item['amount']}")
 
 def remove_item(user: User, params):
