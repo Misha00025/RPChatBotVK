@@ -4,6 +4,7 @@ from app.core.User import User
 from .DiceController import DiceController, redecorate
 from app.modules.BaseModule.BaseAPI import BaseAPI
 from app.core.CommandParser import CommandParser
+from app import Logger as log
 
 
 _math_symbols = ["+", "-", "/", "*", "(", ")"]
@@ -55,7 +56,7 @@ def replace(source_line: str, old_and_new_list: list) -> str:
     if subline != source_line:
         next_line = source_line[index + len(subline): ]
         new_line += replace(next_line, old_and_new_list)
-
+    log.write_and_print(source_line, old_and_new_list)
     result = new_line
     return result
 
@@ -90,7 +91,6 @@ def process_characteristics(matches: list, sublines_with_results: list, user):
     """
     Обрабатывает найденные характеристики, учитывая наличие модификатора ('!')
     """
-    from app import Logger as log
     for match in matches:
         full_char_name = match.strip(':')
         modifier = False
