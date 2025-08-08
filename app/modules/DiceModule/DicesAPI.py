@@ -86,7 +86,7 @@ def apply_modifier(char_value):
     return math.floor((char_value - 10) / 2)
 
 
-def process_characteristics(matches: list, clean_line: str, user):
+def process_characteristics(matches: list, sublines_with_results: list, user):
     """
     Обрабатывает найденные характеристики, учитывая наличие модификатора ('!')
     """
@@ -102,10 +102,7 @@ def process_characteristics(matches: list, clean_line: str, user):
         char_value = float(raw_value) if isinstance(raw_value, (float, int)) or raw_value.isdigit() else 0
         if modifier:
             char_value = apply_modifier(char_value)
-        from app.Logger import write_and_print
-        clean_line = clean_line.replace(match, str(char_value))
-    write_and_print(clean_line)
-    return clean_line
+        sublines_with_results.append((match, char_value))
 
 
 class DicesAPI(BaseAPI):
@@ -121,9 +118,9 @@ class DicesAPI(BaseAPI):
         for line in command_lines:                
             clean_line = str(line).replace(" ", "")
             matches = re.findall(r':([^:]+):', clean_line)
-            clean_line = process_characteristics(matches, clean_line, user)
-            sublines = parse_line_on_sublines(clean_line)
             sublines_with_results = []
+            process_characteristics(matches, sublines_with_results, user)
+            sublines = parse_line_on_sublines(clean_line)
             # print(sublines)
             for subline in sublines:
                 commands = parse_line_on_command(self.cp, subline)
