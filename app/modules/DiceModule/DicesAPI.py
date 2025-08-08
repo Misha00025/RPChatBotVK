@@ -77,7 +77,8 @@ def get_param_value(user: User, param: str):
     fields: dict = character["fields"]
     if param not in fields.keys():
         return 0
-    return fields.get(param).get("value", 0)
+    return int(fields.get(param).get("value", 0))
+
 
 def apply_modifier(char_value):
     """Применяет формулу"""
@@ -97,7 +98,8 @@ def process_characteristics(matches: list, clean_line: str, user):
             char_name = full_char_name[1:]  # Имя характеристики без модификатора
         else:
             char_name = full_char_name
-        char_value = str(get_param_value(user, char_name))
+        raw_value = str(get_param_value(user, char_name))
+        char_value = float(raw_value) if isinstance(raw_value, (float, int)) or raw_value.isdigit() else 0
         if modifier:
             char_value = apply_modifier(char_value)
         clean_line = clean_line.replace(match, str(char_value))
