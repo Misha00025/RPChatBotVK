@@ -126,9 +126,9 @@ class DicesAPI(BaseAPI):
             process_characteristics(matches, sublines_with_results, user)
             formula = replace(formula, sublines_with_results)
             result_line = formula
+            clean_line = result_line
             sublines_with_results = []
             sublines = parse_line_on_sublines(clean_line)
-            # print(sublines)
             for subline in sublines:
                 commands = parse_line_on_command(self.cp, subline)
                 if commands is None:
