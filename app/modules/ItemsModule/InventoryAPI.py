@@ -31,6 +31,6 @@ class ItemsAPI(BaseAPI):
             params = self.cp.find_parameters_in_line(line)
             answer += self.actions[command](user, params) + "\n"
         if i > 1:
-            answer += show_items(user, "")
+            answer += "\n--------------------------\n\n"+show_items(user, "")
         return answer
     

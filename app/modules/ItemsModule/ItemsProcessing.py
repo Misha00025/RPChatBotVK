@@ -73,8 +73,6 @@ def set_item(user: User, params):
     name, amount = parse_message(params)
     if name == "":
         return "Невозможно изменить предмет без названия"
-    if amount <= 0:
-        return "Количество предмета должно быть больше 0"
     inv = Inventory(user.get_user_id())
     ok = inv.update_item(name, amount)
     if not ok:
