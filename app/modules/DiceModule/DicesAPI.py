@@ -133,6 +133,7 @@ class DicesAPI(BaseAPI):
                 if command in self.commands:
                     result = self.dice_controller.execute_command(command, parameters, prefix)
                     sublines_with_results.append((subline, result))
+                    log.write_and_print(sublines_with_results)
             try:
                 formula = replace(line, sublines_with_results)
             except:
