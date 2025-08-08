@@ -15,7 +15,7 @@ class ItemsAPI(BaseAPI):
             PREFIX+" добавить": add_item,
             PREFIX+" убрать": remove_item,
             PREFIX+" установить": set_item,
-            PREFIX: show_items
+            PREFIX+" показать": show_items
         }
         super().__init__(commands)
     
