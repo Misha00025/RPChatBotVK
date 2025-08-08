@@ -1,13 +1,16 @@
+import re
+
+from app.core.User import User
 from .DiceController import DiceController, redecorate
 from app.modules.BaseModule.BaseAPI import BaseAPI
 from app.core.CommandParser import CommandParser
 
 
-_math_simbols = ["+", "-", "/", "*", "(", ")"]
-_simbols = ["(", ")"]
+_math_symbols = ["+", "-", "/", "*", "(", ")"]
+_symbols = ["(", ")"]
 
 
-def parce_parameters(cp: CommandParser, line: str) -> (str, str):
+def parse_parameters(cp: CommandParser, line: str) -> tuple[str, str]:
     parameters = line
     next_line = ""
     return (parameters, next_line)
@@ -15,7 +18,7 @@ def parce_parameters(cp: CommandParser, line: str) -> (str, str):
 
 
 
-def parce_line_on_command(cp: CommandParser, line) -> (str, str, str):
+def parse_line_on_command(cp: CommandParser, line) -> tuple[str, str, str]:
     result = None
     command = cp.find_command_in_line(line)
     if command is None:
@@ -27,9 +30,9 @@ def parce_line_on_command(cp: CommandParser, line) -> (str, str, str):
     return prefix, command, parameters
 
 
-def parce_line_on_sublines(line: str) -> [str]:
+def parse_line_on_sublines(line: str) -> list[str]:
     result = [line]
-    for a in _math_simbols:
+    for a in _math_symbols:
         parts = []
         for part in result:
             parts.extend(part.split(a))
@@ -57,6 +60,49 @@ def replace(source_line: str, old_and_new_list: list) -> str:
     return result
 
 
+def get_param_value(user: User, param: str):
+    import config as c
+    from app.core import character_owners as co
+    from app.tdn.api import character as get_api
+    if c.api is None:
+        return 0
+    character_id = co.as_character(user.get_user_id())
+    api = get_api(character_id)
+    res = api.get()
+    if not res.ok:
+        return 0
+    character: dict = res.json()
+    if "fields" not in character.keys():
+        return 0
+    fields: dict = character["fields"]
+    if param not in fields.keys():
+        return 0
+    return fields.get(param).get("value", 0)
+
+def apply_modifier(char_value):
+    """Применяет формулу"""
+    import math
+    return math.floor((char_value - 10) / 2)
+
+
+def process_characteristics(matches: list, clean_line: str, user):
+    """
+    Обрабатывает найденные характеристики, учитывая наличие модификатора ('!')
+    """
+    for match in matches:
+        full_char_name = match.strip(':')
+        modifier = False
+        if full_char_name.startswith('!'):
+            modifier = True
+            char_name = full_char_name[1:]  # Имя характеристики без модификатора
+        else:
+            char_name = full_char_name
+        char_value = str(get_param_value(user, char_name))
+        if modifier:
+            char_value = apply_modifier(char_value)
+        clean_line = clean_line.replace(match, str(char_value))
+    return clean_line
+
 
 class DicesAPI(BaseAPI):
 
@@ -65,16 +111,18 @@ class DicesAPI(BaseAPI):
         super().__init__(self.commands)
         self.dice_controller = DiceController()
 
-    def assembly_message(self, user, command_lines: [str], request) -> str:
+    def assembly_message(self, user, command_lines: list[str], request) -> str:
         import numexpr as ne
         message = ""
         for line in command_lines:                
             clean_line = str(line).replace(" ", "")
-            sublines = parce_line_on_sublines(clean_line)
+            matches = re.findall(r':([^:]+):', clean_line)
+            clean_line = process_characteristics(matches, clean_line, user)
+            sublines = parse_line_on_sublines(clean_line)
             sublines_with_results = []
             # print(sublines)
             for subline in sublines:
-                commands = parce_line_on_command(self.cp, subline)
+                commands = parse_line_on_command(self.cp, subline)
                 if commands is None:
                     sublines_with_results.append((subline, subline))
                     continue

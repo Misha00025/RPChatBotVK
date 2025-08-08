@@ -63,7 +63,7 @@ class DiceController:
     def is_correct_parameters(self, parameters: str) -> bool:
         return _get_first_num(parameters).isalnum()
 
-    def roll_dices(self, count: str, parameters) -> [int]:
+    def roll_dices(self, count: str, parameters) -> list[int]:
         results = []
         for __ in range(int(count)):
             dice_result = self.roll_dice(parameters)
