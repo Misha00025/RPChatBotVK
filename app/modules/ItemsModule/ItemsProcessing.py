@@ -30,10 +30,8 @@ def show_items(user: User, params):
     name, _ = parse_message(params)
     if name == "деньги":
         return get_wallet(inv, name)
-    ok, items = inv.get_items()
+    items = inv.get_items()
     message, i = "", 0
-    if not ok:
-        return f"Не получилось посмотреть инвентарь игрока {am.get_alias(user.get_user_id())}"
     for item in items:
         i += 1
         amount = item["amount"]
