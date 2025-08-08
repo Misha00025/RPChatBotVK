@@ -102,7 +102,9 @@ def process_characteristics(matches: list, clean_line: str, user):
         char_value = float(raw_value) if isinstance(raw_value, (float, int)) or raw_value.isdigit() else 0
         if modifier:
             char_value = apply_modifier(char_value)
+        from app.Logger import write_and_print
         clean_line = clean_line.replace(match, str(char_value))
+    write_and_print(clean_line)
     return clean_line
 
 
