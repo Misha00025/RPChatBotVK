@@ -90,6 +90,7 @@ def process_characteristics(matches: list, sublines_with_results: list, user):
     """
     Обрабатывает найденные характеристики, учитывая наличие модификатора ('!')
     """
+    from app import Logger as log
     for match in matches:
         full_char_name = match.strip(':')
         modifier = False
@@ -99,9 +100,10 @@ def process_characteristics(matches: list, sublines_with_results: list, user):
         else:
             char_name = full_char_name
         raw_value = str(get_param_value(user, char_name))
-        char_value = float(raw_value) if isinstance(raw_value, (float, int)) or raw_value.isdigit() else 0
+        char_value = int(raw_value) if isinstance(raw_value, (int)) or raw_value.isdigit() else 0
         if modifier:
             char_value = apply_modifier(char_value)
+        log.write_and_print((match, char_value))
         sublines_with_results.append((match, char_value))
 
 
