@@ -44,6 +44,9 @@ class Inventory:
                 "amount": int(amount),
                 "description": item["description"],
             }
-            res = self.api.put(item["id"], data)
+            if amount > 0:
+                res = self.api.put(item["id"], data)
+            else:
+                res = self.api.delete(item["id"])
             return res.ok
         
