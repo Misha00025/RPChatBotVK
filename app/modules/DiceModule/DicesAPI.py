@@ -56,7 +56,7 @@ def replace(source_line: str, old_and_new_list: list) -> str:
     if subline != source_line:
         next_line = source_line[index + len(subline): ]
         new_line += replace(next_line, old_and_new_list)
-    log.write_and_print(source_line, old_and_new_list)
+    log.write_and_print((source_line, old_and_new_list))
     result = new_line
     return result
 
