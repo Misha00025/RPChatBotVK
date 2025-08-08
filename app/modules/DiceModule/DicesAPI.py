@@ -118,12 +118,14 @@ class DicesAPI(BaseAPI):
         import numexpr as ne
         message = ""
         for line in command_lines:
-            formula = line                
+            formula = line
+            result_line = line                
             clean_line = str(line).replace(" ", "")
             matches = re.findall(r':([^:]+):', clean_line)
             sublines_with_results = []
             process_characteristics(matches, sublines_with_results, user)
             formula = replace(formula, sublines_with_results)
+            result_line = replace(result_line, sublines_with_results)
             sublines_with_results = []
             sublines = parse_line_on_sublines(clean_line)
             # print(sublines)
@@ -142,5 +144,5 @@ class DicesAPI(BaseAPI):
             except:
                 return None
             clean_formula = redecorate(formula)
-            message += f"Результат броска {line}: {ne.evaluate(clean_formula)} ({formula}) \n"
+            message += f"Результат броска {result_line}: {ne.evaluate(clean_formula)} ({formula}) \n"
         return message
