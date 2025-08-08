@@ -8,7 +8,7 @@ from app.modules.NotesModule.NotesAPI import NotesAPI
 from app.modules.LocationsModule.LocationsAPI import LocationsAPI
 from app.modules.AliasModule.AliasAPI import AliasAPI
 from app.modules.CharactersModule.CharactersAPI import CharacterAPI
-# from app.modules.ItemsModule.InventoryAPI import ItemsAPI
+from app.modules.ItemsModule.InventoryAPI import ItemsAPI
 from app.modules.ItemsModule.WalletAPI import WalletAPI
 import config
 
@@ -46,7 +46,7 @@ def load_modules(is_valid=lambda entity: True):
     if config.api is not None:
         modules.append(CharacterAPI())
         # modules.append(NotesAPI())
-        # modules.append(ItemsAPI())
+        modules.append(ItemsAPI())
         modules.append(WalletAPI())
         print ("Сетевые модули подключены")
     return modules
