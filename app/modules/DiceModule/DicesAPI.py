@@ -103,8 +103,8 @@ def process_characteristics(matches: list, sublines_with_results: list, user):
         char_value = int(raw_value) if isinstance(raw_value, (int)) or raw_value.isdigit() else 0
         if modifier:
             char_value = apply_modifier(char_value)
-        # log.write_and_print((match, char_value))
         sublines_with_results.append((f":{match}:", char_value))
+        log.write_and_print(sublines_with_results)
 
 
 class DicesAPI(BaseAPI):
