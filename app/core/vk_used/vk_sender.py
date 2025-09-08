@@ -18,18 +18,27 @@ class VkSender:
 
     def edit_message(self, response: Response):
         # print("Edit messages in vk")
-        addressees, message = response.addressee, response.message
+        addressees, message, attachments = response.addressee, response.message,response.attachments
         for addressee in addressees:
             message_id, user_id = addressee
-            self._edit_message(user_id, message_id, message)
+            self._edit_message(user_id, message_id, message, attachments)
 
-    def _edit_message(self, peer_id, message_id, new_message):
-        self._api.messages.edit(
-            peer_id=peer_id,
-            message_id=message_id,
-            message=new_message,
-            dont_parse_links=1
-        )
+    def _edit_message(self, peer_id, message_id, new_message, attachments = None):
+        if attachments is not None:
+            self._api.messages.edit(
+                peer_id=peer_id,
+                message_id=message_id,
+                message=new_message,
+                attachment = attachments,
+                dont_parse_links=1
+            )
+        else:
+            self._api.messages.edit(
+                peer_id=peer_id,
+                message_id=message_id,
+                message=new_message,
+                dont_parse_links=1
+            )
 
     def _write_msg(self, user_id, message, attachment = None):
         if message == "":

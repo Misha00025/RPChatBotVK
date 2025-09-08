@@ -61,5 +61,6 @@ class Arkadia:
         listener.add_action_to_event(lambda event: router.send_response(event), VkEventType.MESSAGE_NEW)
         listener.add_action_to_event(lambda event: router.route_message(event), VkEventType.MESSAGE_NEW)
         listener.add_action_to_event(lambda event: router.edit_routed_message(event), VkEventType.MESSAGE_EDIT)
+        # TODO: listener.add_action_to_event(lambda event: router.delete_message(event), VkEventType.MESSAGE_DELETE)
         listener.start_listen()
 
